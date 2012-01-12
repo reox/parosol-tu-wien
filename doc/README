@@ -1,0 +1,14 @@
+1. Compiling ParOSol
+
+cd build/
+./do_configure
+make
+
+2. Running ParOSol
+cd build/
+./gmg --level 4 --tol 1e-7 ../mesh/h5/sphere.h5
+
+3. Viewing Results with Paraview
+cd mesh/h5
+../../tools/createxmf.py sphere.h5
+and open in Paraview the xmf file
