@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 """
  * ParOSol: a parallel FE solver for trabecular bone modeling
