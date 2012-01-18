@@ -135,10 +135,11 @@ MlCycle<T>::MlCycle(OctreeGrid<T> &finegrid, GenericMatrix<OctreeGrid<T> > &mat,
 
 	t_coord ld[3];
 	_coarsegrid->GetLocalDim(ld);
+	_coarsegrid->GetGlobalDim(ld);
 	if (level == 0|| (ld[0] == 2) || (ld[1] == 2)|| (ld[2] == 2)) 
 		_solver = new MlLevelCG(*_coarsemat);
 	else
-		_solver = new MlCycle(*_coarsegrid,  *_coarsemat, degree, level-1, stype, ratio, w+1);
+		_solver = new MlCycle(*_coarsegrid,  *_coarsemat, degree, level-1, stype, ratio, w);
 
 	return;
 }
