@@ -140,7 +140,6 @@ class GenericMatrix: public StiffnessMatrix
 		std::vector<double> _stored_disp;
 
 		double _factor;
-		//  FullGridMPI &_comm;
 
 		//some print function
 		std::ostream& print_mat(std::ostream& stream) const;
@@ -359,7 +358,7 @@ std::ostream& GenericMatrix<Grid>::print_prop(std::ostream& stream) const
 	_grid.GetRes(GridDim);
 	t_coord GlobalDim[3];
 	_grid.GetGlobalDim(GlobalDim);
-	stream << "FullGridMatrix:\n";
+	stream << "Matrix:\n";
 	stream << "   used Grid Size: " << GlobalDim[0] << ", " << GlobalDim[1] << ", " << GlobalDim[2]  << "\n";
 	stream << "   used Grid Resolution: " << GridDim[0] << ", " << GridDim[1] << ", " << GridDim[2]  << "\n";
 	stream << "   used Material properties:   E: " << _matprop[0] << " Poisson: "<< _matprop[1] << std::endl;

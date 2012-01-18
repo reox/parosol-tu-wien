@@ -87,7 +87,7 @@ int main( int argc, char* argv[])
         i++;
     }
 
-	PCOUT(MyPID, "file: " << file <<std::endl);
+	PCOUT(MyPID, "file: " << file << " tolerance: " << tol << " max. num. level: "<< level << std::endl);
     if (file.compare("") == 0) {
 		PCOUT(MyPID, "No file given\n");
 		MPI_Finalize();

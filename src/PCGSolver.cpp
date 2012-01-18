@@ -78,8 +78,8 @@ int PCGSolver::Solve(VectorXd &r, VectorXd &x)
     norm =  sqrt(_mat.dot(r,r));
   }
   if (_verbose) {
-    PCOUT(MyPID, "Iteration: "<< i << "\t Residuum precondioned: " << sqrt(delta_new)/res0 << std::endl)
-    PCOUT(MyPID, "Iteration: "<< i << "\t Residuum:              " << norm/resreal0 << std::endl);
+    PCOUT(MyPID, "Total iterations: "<< i << "\t Residuum preconditioned: " << sqrt(delta_new)/res0 << std::endl)
+    PCOUT(MyPID, "Total iterations: "<< i << "\t Residuum:                " << norm/resreal0 << std::endl);
     std::cout.flags(origflag); 
     }
 
