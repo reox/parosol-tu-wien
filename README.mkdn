@@ -2,7 +2,7 @@
 
 ## Introduction ##
 
-ParOSol stand for Parallel Octree Solver.
+ParOSol stands for PARallel Octree SOLver.
 
 It is a fully-parallel micro-FE analysis code based on Octree to solve
 linear elasticity problems. Because it works on equal sized voxel geometry,

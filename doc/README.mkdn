@@ -1,0 +1,104 @@
+# Documentation of ParOSol #
+
+## 1. Introduction ##
+
+The [markdown syntax](http://en.wikipedia.org/wiki/Markdown) is used in this
+Readme-file. It can be translated into HTML oder other format with [Pandoc]
+
+    pandoc -r markdown -t html -o readme.html README
+
+
+## 2. Building ParOSol ##
+
+ParOsol has only minimal dependencies on other libraries. To build it
+[HDF5 library 1.8](http://www.hdfgroup.org/HDF5/) and
+[eigen v2](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+has to be installed. A MPI-compiler has to be used. OpenMPI and MPICH2 are
+supported.
+
+If all libraries are installed from the Linux distribution, ParOSol can be build
+in following way:
+
+    cd build/
+    ./do_configure
+    make
+
+The MPI compiler can be set over the following variable:
+
+    -DCMAKE_CXX_COMPILER:FILEPATH=mpic++
+
+If HDF5 is not installed in the standard library path then set following variables:
+
+    HDF5_LIBRARIES:PATH=
+    HDF5_INCLUDE_DIRS:PATH=
+
+Eigen is a pure template library. This means the library only consist of header
+files. This can be easily included by the header path switch (-I for gcc). If
+eigen2 is installed do /path/toeigen/eigen2/Eigen set following variable:
+
+    CMAKE_CXX_FLAGS:STRING=-I/path/toeigen
+
+In the directory `build/` is a sample configure script called `do_configure.sh`. The
+script can run with following commands:
+
+    cd build
+    ./do_configure.sh
+
+Instead using the `do_configure.sh` script, __cmake__ can be called directly. If the
+the __HDF5__ library is installed at `/path/to/hdf5/` following command should be used
+to configure ParOSol:
+
+    cmake \
+        -D CMAKE_CXX_COMPILER:FILEPATH=mpic++ \
+        -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
+        -D HDF5_LIBRARIES:PATH=/path/to/hdf5/lib/libhdf5.so\
+        -D HDF5_INCLUDE_DIRS:PATH=/path/to/hdf5/include \
+        ../src
+
+After running the configure scripts, ParOSol can be built by running the following
+command:
+
+    make
+
+Now, the software is built in the  `build/` directory.
+
+
+## 3. Running ParOSol ##
+
+In the main directory of ParOSol is a tarball with sample meshes. Extract it with:
+
+    tar xzvf mesh.tgz
+
+Now change the directory:
+
+    cd build/
+
+The sample mesh can be analysed with:
+
+    mpirun -np 4 ./gmg --level 4 --tol 1e-7 ../mesh/h5/sphere.h5
+
+This start ParOSol with 4 processes. This is suited for a computer with 4 cores.
+At most four level are used in the multigrid preconditioner and the solving tolerance
+is set to 1e-7. For huger input mesh more level should be used. The results is written
+back into the original mesh.
+ 
+
+## 4. Viewing the results ##
+
+ParOSol ships some helpers in the directory `tools`. There is also a script `createxmf.py`
+that generates a xmf file. The xmf file describes how to read the h5 mesh file. It is
+important that the tool is executed from the place where the meshes are saved.  
+
+    cd mesh/h5
+    ../../tools/createxmf.py sphere.h5
+
+The new generated file can be open with [Paraview](http://paraview.org)
+
+## 5. Building the sourcecode docuentation ##
+
+The sourcecode of ParOSol is documented with [doxygen](http://www.doxygen.org).
+The building of the documentation is included in the building system. If
+doxygen is installed and found by cmake you can run following command to build
+the documentation:
+
+    make docu
