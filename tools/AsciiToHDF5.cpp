@@ -35,32 +35,67 @@ public:
 
 
 class BCTopDown: public BC {
-public:
-	BCTopDown(short iz, double disp): _iz(iz), _disp(disp)
-	{
-	}
+    public:
+        BCTopDown(short iz, double disp): _iz(iz), _disp(disp)
+    {
+    }
 
-	~BCTopDown() {}
+        ~BCTopDown() {}
 
-	bool operator()(short x, short y, short z, short d,  double &v) {
-		v =0;
-        //on bottom plate x,y=0 and  z = disp
-		if ( z == 0) {
-			if ( d == 2) {
-				v = _disp;
-			}
-			return true;
-		}
-        //on top plate all are fixed 
-		if ( z == _iz)
-            //if (d == 2) // only z is fixed
-		  return true;
-		return false;
-	}
-	short _iz;
-	double _disp;
+        bool operator()(short x, short y, short z, short d,  double &v) {
+            v =0;
+            //on bottom plate x,y=0 and  z = disp
+            if ( z == 0) {
+                if ( d == 2) {
+                    v = _disp;
+                }
+                return true;
+            }
+            //on top plate all BCs are fixed 
+            if ( z == _iz)
+                //if (d == 2) // only z is fixed
+                return true;
+            return false;
+        }
+        short _iz;
+        double _disp;
 
 };
+
+class BCTopDown_dispfromtop: public BC {
+    public:
+        BCTopDown_dispfromtop(short iz, double disp): _iz(iz), _disp(disp)
+    {
+    }
+
+        ~BCTopDown_dispfromtop() {}
+
+        bool operator()(short x, short y, short z, short d,  double &v) {
+            v = 0;
+            /*
+               if ( z == 0 && x == 0 && y == 0 )
+               return true;
+               if ( z == 0 && x == _iz/2  && y == 0 && d == 1 )
+               return true;
+               */
+            //on bottom plate x,y=0 and  z = 0
+            //if ( z == 0 && d == 2 ) {
+            if ( z == 0) {
+                return true;
+            }
+            //on top plate all BCs are fixed 
+            if ( z == _iz ) {
+                if ( d == 2 ) {
+                    v = -_disp;
+                    return true;
+                }
+                return true;
+            }
+            return false;
+        }
+        short _iz;
+        double _disp;
+        };
 
 struct bcitem {
 	bcitem(short lx=0, short ly=0, short lz=0, short ld=0):x(lx), y(ly), z(lz), d(ld)
@@ -125,7 +160,7 @@ int main (int argc, char * argv[])
 
 	double vsize = ((double)1)/imagesize[2];
     double disp = vsize*imagesize[2]*0.1; // compression 10% of the whole size
-	BCTopDown bc(imagesize[2],disp);
+	BCTopDown_dispfromtop bc(imagesize[2],disp);
 	std::map<bcitem, double> bcmap;
 
 	//map for boundary condition
