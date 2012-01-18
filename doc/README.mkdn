@@ -116,7 +116,7 @@ Now, the software is built in the `build/` directory.
 In the main directory of ParOSol is a tarball with sample meshes.
 Extract it with:
 
-    tar xzvf mesh.tgz
+    tar xjvf mesh.tar.bz2
 
 Now change the directory:
 
