@@ -1,19 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
 
-PROJECT( gmgbone )
-SET( gmg_src GReader.cpp GWriter.cpp JacobiSmoother.cpp Toolbox.cpp AsciiImage.cpp HDF5Image.cpp AsciiImageMirrored.cpp fem.cpp est_ev.cpp Chebyshev.cpp PCGSolver.cpp main.cpp)
-#old setting
-ADD_EXECUTABLE( gmg ${gmg_src} )
+PROJECT( parosol )
+SET( parosol_src GReader.cpp GWriter.cpp JacobiSmoother.cpp Toolbox.cpp AsciiImage.cpp HDF5Image.cpp AsciiImageMirrored.cpp fem.cpp est_ev.cpp Chebyshev.cpp PCGSolver.cpp main.cpp)
+
+ADD_EXECUTABLE( parosol ${parosol_src} )
 
 #Debuggin
 #SET( CMAKE_VERBOSE_MAKEFILE on )
 set(CMAKE_CXX_FLAGS "-Wall ${CMAKE_CXX_FLAGS}")
-
-
-# MPI
-#FIND_PACKAGE(MPI REQUIRED)
-#INCLUDE(CMakeForceCompiler)
-#CMAKE_FORCE_CXX_COMPILER(mpicxx "MPI C++ Compiler")
 
 # HDF5
 FIND_PACKAGE(HDF5 REQUIRED)
@@ -31,4 +25,4 @@ ELSE (DOXYGEN_FOUND)
     MESSAGE(STATUS "WARNING: Doxygen not found - Reference manual will not be created")
 ENDIF (DOXYGEN_FOUND)
 
-target_link_libraries(gmg ${LIBS})
+target_link_libraries(parosol ${LIBS})
