@@ -67,6 +67,12 @@ sDisp =  "     <Attribute Name=\"Displacement\" AttributeType=\"Vector\" Center=
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
+sForce=  "     <Attribute Name=\"Force\" AttributeType=\"Vector\" Center=\"Node\">\n" \
+         "       <DataItem Dimensions=\""+repr(nr_nodes)+" 3\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
+         "         "+filename+":/Solution/force\n" \
+         "       </DataItem>\n" \
+         "     </Attribute>\n"
+
 sSED =   "     <Attribute Name=\"SED\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
          "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Solution/SED\n" \
@@ -79,7 +85,7 @@ sVM =    "     <Attribute Name=\"S_vonMises\" AttributeType=\"Scalar\" Center=\"
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
-sEFF =    "     <Attribute Name=\"S_EFF\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
+sEFF =    "     <Attribute Name=\"EFF\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
          "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Solution/EFF\n" \
          "       </DataItem>\n" \
@@ -90,11 +96,12 @@ sEmoduli="     <Attribute Name=\"Emoduli\" AttributeType=\"Scalar\" Center=\"Cel
          "           "+filename+":/Mesh/Emoduli\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
+
 sEnd =   "   </Grid>\n" \
          " </Domain>\n" \
          "</Xdmf>\n" 
 #write file
 outfilename = filename.replace(".h5",".xmf")
 outfile = open(outfilename, 'w')
-outfile.write("%s%s%s%s%s%s%s%s" % (sStart, sMesh, sDisp, sSED, sVM, sEFF,  sEmoduli, sEnd))
+outfile.write("%s%s%s%s%s%s%s%s%s" % (sStart, sMesh, sDisp, sForce, sSED, sVM, sEFF,  sEmoduli, sEnd))
 outfile.close()

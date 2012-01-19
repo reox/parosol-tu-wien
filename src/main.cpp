@@ -185,7 +185,10 @@ void print(GenericMatrix<T> &matr, Problem<T> &problem, std::string file, int My
 	HDF5Printer<OctreeKey_Lookup> print(file, matr.GetGrid());
 	matr.PrintTimings();
 	timer.Start("Write");
-	print.PrintAll(problem.GetSol(),problem.GetRes());
+    int dofs = matr.GetGrid().GetNrDofs();
+    VectorXd force(dofs);
+    matr.Apply_NoResetBoundaries(problem.GetSol(), force);
+	print.PrintAll(problem.GetSol(), force, problem.GetRes());
 	timer.Stop("Write");
 	t_timing time = timer.ElapsedTime("Write");
 	PCOUT(MyPID, "Outputtime: " << COUTTIME(time) << "s\n");

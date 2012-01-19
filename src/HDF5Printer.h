@@ -136,7 +136,7 @@ class HDF5Printer {
 		
         void PrintEmoduli() {
             Writer->Select("/Mesh");
-            VectorXd emoduli(_grid.GetNrElem());
+            VectorXf emoduli(_grid.GetNrElem());
 			t_index i =0;
 			for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements()){
 				emoduli[i]=_grid.GetElementWeight()*1000; 
@@ -147,7 +147,7 @@ class HDF5Printer {
         }
 
         //x displacement, res residuum
-		void PrintAll(VectorXd &x, VectorXd &res) {
+		void PrintAll(VectorXd &x, VectorXd &force, VectorXd &res) {
 			PrintGrid();
 
 			PostProcess<OctreeGrid<T> > post(_grid);
@@ -157,6 +157,8 @@ class HDF5Printer {
 			
 			Writer->Select("/Solution");
 			Writer->Write("disp", x.data(), _grid.GetNrNodesGlobal(),_grid.GetNrPrivateNodes(), 3, _grid.GetNodeOffset());
+			MPI_Barrier(MPI_COMM_WORLD);
+            Writer->Write("force", force.data(), _grid.GetNrNodesGlobal(),_grid.GetNrPrivateNodes(), 3, _grid.GetNodeOffset());
 			MPI_Barrier(MPI_COMM_WORLD);
 			Writer->Write("VonMises", m.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 1, _grid.GetElemOffset());
 			MPI_Barrier(MPI_COMM_WORLD);

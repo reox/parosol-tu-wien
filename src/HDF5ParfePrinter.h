@@ -67,7 +67,7 @@ class HDF5ParfePrinter {
 		void PrintGrid() {
 			PrintCoord("Coordinates");
 			PrintElems("Elements");
-			PrintBC("fixed_nodes");
+			PrintBC();
 			PrintParameters();
 		}
 		
@@ -165,7 +165,7 @@ class HDF5ParfePrinter {
 			_grid.Recv_import_Ghost(ind);
 			ind.setZero(_grid.GetNrDofs());
 			t_octree_key offset = _grid.GetNodeOffset();
-			for (int i = 0; i < _grid.GetNrNodes(); i++) {
+			for (unsigned int i = 0; i < _grid.GetNrNodes(); i++) {
 				ind[3*i] = i + offset+1;
 			}
 			_grid.Send_import_Ghost(ind);
@@ -182,12 +182,14 @@ class HDF5ParfePrinter {
 			delete[] elems;
 		}
 		
-		void PrintAll(VectorXd &x, VectorXd &res) {
+        void PrintAll(VectorXd &x, VectorXd &force, VectorXd &res) {
+
 			PrintGrid();
 
 			PostProcess<OctreeGrid<T> > post(_grid);
-			VectorXd m, s;
-			post.ComputeStressAndStrain(x,m,s);
+			VectorXd m, s, eff;
+			post.ComputeStressAndStrain(x,m,s,eff);
+			MPI_Barrier(MPI_COMM_WORLD);
 			
 			Writer->Select("/Solution");
 			Writer->Write("disp", x.data(), _grid.GetNrNodesGlobal(),_grid.GetNrPrivateNodes(), 3, _grid.GetNodeOffset());
