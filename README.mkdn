@@ -25,6 +25,7 @@ Go to the build directory and edit the do_configure file.
 Example:
 
     cmake \
+        -D CMAKE_CXX_COMPILER:FILEPATH=mpic++ \
         -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
         -D HDF5_LIBRARIES:PATH=/path/to/hdf5/lib/libhdf5.so\
         -D HDF5_INCLUDE_DIRS:PATH=/path/to/hdf5/include \

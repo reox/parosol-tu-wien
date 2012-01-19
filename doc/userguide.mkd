@@ -1,0 +1,280 @@
+% ParOSol User's Guide
+% Cyril Flaig
+% 18. January 2012
+
+# Name #
+
+ParOSol
+
+
+# Synopsis #
+
+    parosol [options] input-file 
+
+
+# Description #
+
+ParOSol is a fully-parallel micro-FE analysis code based on Octree to
+solve linear elasticity problems. ParOSol solves the problem direct on
+3D images, which can be obtained by CT-scans. It can be run on desktop
+machine but also on cluster.
+
+
+# Using ParOSol #
+
+If no option are given ParOSol solves to a tolerance of 1e–6 and uses in
+maximum level. A input have to be given. ParOSol write the result back
+into the input file.
+
+    parosol --level 3 --tol 1e-4 simple.h5 
+
+This solve the elasticity equation on mesh given in simple.h5. It uses
+maximal 3 multigrid levels and solve to a relative residual of 1e–4.
+
+
+# Converting this document #
+
+The [markdown syntax](http://en.wikipedia.org/wiki/Markdown) is used in
+this user's guide. It can be translated into HTML oder other format with
+[Pandoc](http://johnmacfarlane.net/pandoc/). To convert it into HTML use
+following command:
+
+    pandoc -r markdown -t html -o userguide.html -c parosol.css \
+           -S -N -s --toc userguide.mkd
+
+Converting to LaTeX:
+
+    pandoc -r markdown -t latex -o userguide.tex --template=parosol.tex \
+           -S -N -s --toc userguide.mkd
+
+
+# Building and running ParOSol #
+
+This section describes how to build ParOSol from source and running an
+example mesh.
+
+
+## Getting the source code ##
+
+The source code is available at [bitbucket](https://bitbucket.org/cflaig/parosol/overview)
+or clone it with:
+
+    hg clone https://bitbucket.org/cflaig/parosol
+
+
+## Dependencies ##
+
+ParOSol has only minimal dependencies on other libraries. To build it
+[HDF5 library 1.8](http://www.hdfgroup.org/HDF5/) and [eigen
+v2](http://eigen.tuxfamily.org/index.php?title=Main_Page) has to be
+installed. A MPI-compiler has to be used. OpenMPI and MPICH2 are
+supported.
+
+
+## Compiling ParOSol ##
+
+If all libraries are installed from the Linux distribution, ParOSol can
+be build in following way:
+
+    cd build/
+    ./do_configure
+    make
+
+The MPI compiler can be set over the following variable:
+
+    -DCMAKE_CXX_COMPILER:FILEPATH=mpic++
+
+If HDF5 is not installed in the standard library path then set following
+variables:
+
+    HDF5_LIBRARIES:PATH=
+    HDF5_INCLUDE_DIRS:PATH=
+
+Eigen is a pure template library. This means the library only consist of
+header files. This can be easily included by the header path switch (-I
+for _GCC_ ). If eigen2 is installed do `/path/toeigen/eigen2/Eigen` set
+following variable:
+
+    CMAKE_CXX_FLAGS:STRING=-I/path/toeigen
+
+In the directory `build/` is a sample configure script called
+`do_configure.sh`. The script can run with following commands:
+
+    cd build
+    ./do_configure.sh
+
+Instead using the `do_configure.sh` script, **cmake** can be called
+directly. If the **HDF5** library is installed at `/path/to/hdf5/`
+following command should be used to configure ParOSol:
+
+    cmake \
+        -D CMAKE_CXX_COMPILER:FILEPATH=mpic++ \
+        -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
+        -D HDF5_LIBRARIES:PATH=/path/to/hdf5/lib/libhdf5.so\
+        -D HDF5_INCLUDE_DIRS:PATH=/path/to/hdf5/include \
+        ../src
+
+After running the configure scripts, ParOSol can be built by running the
+following command:
+
+    make
+
+Now, the software is built in the `build/` directory.
+
+
+## Running a simple mesh ##
+
+In the main directory of ParOSol is a tarball with sample meshes.
+Extract it with:
+
+    tar xjvf mesh.tar.bz2
+
+Now change the directory:
+
+    cd build/
+
+The following command starts the simulation:
+
+    mpirun -np 4 ./parosol --level 4 --tol 1e-7 ../mesh/h5/sphere.h5
+
+ParOSol is started with 4 processes. This is suited for a computer with
+4 cores. At most four level are used in the multigrid preconditioner and
+the solving tolerance is set to 1e–7. For huger input mesh more level
+should be used. The results is written back into the original mesh.
+
+
+## Viewing the results ##
+
+ParOSol ships some helpers in the directory `tools`. There is also a
+script `createxmf.py` that generates a xmf file. The xmf file describes
+how to read the h5 mesh file. It is important that the tool is executed
+from the place where the meshes are saved.
+
+    cd mesh/h5
+    ../../tools/createxmf.py sphere.h5
+
+The new generated file can be open with [Paraview](http://paraview.org)
+
+
+# Building the source code documentation #
+
+The source code of ParOSol is documented with
+[Doxygen](http://www.doxygen.org). The building of the documentation is
+included in the building system. If Doxygen is installed and found by
+cmake you can run following command to build the documentation:
+
+    make docu
+
+
+# File format #
+
+ParOSol reads and writes into the same file. Thus the file consists of
+a input and output part. Because HDF5 is used the file is organized in
+datasets and group of datasets.
+
+
+## Data types involved ##
+
+The HDF5 library handles can handle the endianness. Below the Table
+shows the data types used in the I/O operation. Because most of the
+computers uses the little endian format, a `double` is interpreted in
+little endian. 
+
+`H5T_IEEE_F32LE` has to be read as IEEE floating point number single
+precision and little endian.
+
+The table gives an overview on the used formats
+
+  native      hdf5 type
+  ---------   -------------------
+  `float`     `H5T_IEEE_F32LE`
+  `double`    `H5T_IEEE_F64LE`
+  `short`     `H5T_STD_U16LE`
+  `long`      `H5T_STD_I64LE`
+
+
+## Input file format ##
+
+ParOSol reads all needed data from the dataset group `Image_Data`.
+This group must contain following datasets:
+
+-   `Image`
+    -   Type: `H5T_IEEE_F32LE`
+    -   Size: (x,y,z)
+    -   Description: Holds the 3D image of size x,y,z. The value are the
+        Young’s modulus in GPa.
+
+-   `Voxelsize`
+    -   Type: `H5T_IEEE_F64LE`
+    -   Size: scalar
+    -   Description: Size of the voxels
+
+-   `Poison_ratio`
+    -   Type: `H5T_IEEE_F64LE`
+    -   Size: scalar
+    -   Description: The Poison’s ratio of the material `[0,50)`.
+        Remark: Poison’s ratio is constant over the whole image.
+
+-   `Fixed_Displacement_Coordinates`
+    -   Type: `H5T_STD_U16LE`
+    -   Size: (n, 4)
+    -   Description: This Datasets describes the boundary condition. The
+        first 3 values are the coordinate of the boundary nodes. The
+        fourth value describes the direction which is fixed (`0 = x`,
+        `1 = y`, `2 = z`).
+
+-   `Fixed_Displacement_Values`
+    -   Type: `H5T_IEEE_F32LE`
+    -   Size: n
+    -   Description: Holds the displacements of the boundary condition.
+        `Fixed_Displacement_Coordinates` indicates the position and the
+        direction and this dataset saves the displacements. This dataset
+        must have the same number of row as
+        `Fixed_Displacement_Coordinates`.
+
+
+## Output file format ##
+
+ParOSol writes the solution and the mesh. The mesh is needed to
+visualize the solution. The solution and the mesh are two different
+group of datasets. The `Mesh` group contains following datasets:
+
+-   `Coordinates`
+    -   Type: `H5T_IEEE_F32LE`
+    -   Size: (n,3)
+    -   Description: Holds the Coordinates of the vertices.
+
+-   `Elements`
+    -   Type: `H5T_STD_I64LE`
+    -   Size: (m,8)
+    -   Description: Stores the 8 indices of the adjacency nodes.
+
+-   `Emoduli`
+    -   Type: `H5T_IEEE_F32LE`
+    -   Size: (m,1)
+    -   Description: Stores for each element the Young’s modulus.
+
+The results and some post processing values are stored in the group
+`Solution`:
+
+-   `disp`
+    -   Type: `H5T_IEEE_F64LE`
+    -   Size: (n,3)
+    -   Description: Displacement in each node.
+
+-   `force`
+    -   Type: `H5T_IEEE_F64LE`
+    -   Size: (n,3)
+    -   Description: Force in each node.
+
+-   `SED`
+    -   Type: `H5T_STD_F64LE`
+    -   Size: (m,1)
+    -   Description: Strain Energy Density. It is computed in the middle
+        point of the cube.
+
+-   `VonMises`
+    -   Type: `H5T_STD_F64LE`
+    -   Size: (m,1)
+    -   Description: Von Mises Stress. It is computed in the middle
+        point of the cube.

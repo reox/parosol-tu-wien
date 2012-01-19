@@ -25,23 +25,41 @@ div#TOC {
     padding: 0;
 }
 
+#TOC a {
+    color: #3a3a3a;
+}
+
+table {
+    border-collapse:collapse;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+table, td, th {
+    border: 1px dotted gray;
+    padding: 5px;
+}
 pre {
     border: 1px dotted gray;
-    background-color: #ececac;
+    background-color: #f7f7f7;
     color: #1111111;
     padding: 0.5em;
+    line-height: 120%;
 }
 code {
     font-family: monospace;
 }
 h1 a, h2 a, h3 a, h4 a, h5 a { 
     text-decoration: none;
-    color: #7a7a7a; 
+    color: #7a7a7a;
 }
 h1, h2, h3, h4, h5 { font-family: verdana;
                      font-weight: bold;
                      border-bottom: 1px dotted black;
-                     color: #7a5ada; }
+                     color: #7a7a7a;
+}
 h1 {
         font-size: 130%;
 }
