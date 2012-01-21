@@ -435,11 +435,16 @@ int HDF5_GReader::Read(const std::string& name, hid_t type, void* data, hsize_t*
 
 int HDF5_GReader::GetSizeOfDataset(const std::string& name, hsize_t* size, const int number_dims)
 {
+  hid_t dataset;
+
   if (mpi_rank == 0) {
-    hid_t dataset = H5Dopen(group, name.c_str(), H5P_DEFAULT);
-    if (dataset < 0)
-      return -1;
-  
+    dataset = H5Dopen(group, name.c_str(), H5P_DEFAULT);
+  }
+  MPI_Bcast(&dataset, sizeof(hid_t), MPI_BYTE, 0, MPI_COMM_WORLD);
+  if (dataset < 0) {
+    return -1;
+  }
+  if (mpi_rank == 0) {
     // Read the dimensions
     hsize_t* max_dims = new hsize_t[number_dims];
     hid_t dataspace = H5Dget_space(dataset);
