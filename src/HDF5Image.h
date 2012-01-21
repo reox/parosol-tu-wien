@@ -22,6 +22,7 @@
 
 #include "ImageReader.h"
 #include "CPULayout.h"
+#include "GReader.hpp"
 #include <string>
 
 //! A class to generate a bone image.
@@ -58,6 +59,7 @@ public:
 
 
 private:
+  void ReadBC(HDF5_GReader &reader, std::string s,std::vector<unsigned short> & coordinates, std::vector<float> & values);
   std::string _file;
   int _dim;
   CPULayout &_layout;
@@ -65,7 +67,7 @@ private:
     struct {int _procx, _procy, _procz; };
     int _proc[3];
   };
-  int MyPID;
+  int MyPID, mpi_size;
 };
   
 #endif /* HDF5IMAGE_H */

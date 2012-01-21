@@ -19,7 +19,6 @@
 
 #include "Config.h"
 #include "HDF5Image.h"
-#include "GReader.hpp"
 #include <mpi.h>
 #include <hdf5.h>
 #include <string>
@@ -27,6 +26,52 @@
 #include <map>
 
 #include "Timing.h"
+
+void HDF5Image::ReadBC(HDF5_GReader &reader, std::string s,std::vector<unsigned short> & coordinates, std::vector<float> & values)
+{
+  hsize_t global_dims_of_hdf5[3];
+  if (reader.GetSizeOfDataset((s+"_Values").c_str(),global_dims_of_hdf5, 1) > 0)
+  {
+    std::map<bcitem, double> bcmap;
+    double bc_per_cpu = ((double) global_dims_of_hdf5[0])/mpi_size;
+    hsize_t my_bc_offset = MyPID*bc_per_cpu;
+    hsize_t my_bc_upper_offset =(MyPID+1)*bc_per_cpu; //last element is not included. eg 2  then 0,1 belongs to it
+    hsize_t my_bc_count =my_bc_upper_offset - my_bc_offset;
+    if (MyPID == mpi_size -1) {
+        my_bc_upper_offset = global_dims_of_hdf5[0];
+        my_bc_count =my_bc_upper_offset - my_bc_offset;
+    }
+
+    float *bcdisp = new float[my_bc_count];
+    reader.Read((s+"_Values").c_str(), bcdisp, &my_bc_offset, &my_bc_count, 1);
+
+    short *bccoords = new short[my_bc_count*4];
+    reader.Read((s+"_Coordinates").c_str(), bccoords, global_dims_of_hdf5[0], my_bc_count, 4, my_bc_offset);
+    bcitem tmp;
+    unsigned int d =0;
+    double disp;
+    for(unsigned int i=0; i < my_bc_count*4;) {
+        tmp.z = bccoords[i++]; 
+        tmp.y = bccoords[i++];
+        tmp.x = bccoords[i++];
+        tmp.d = bccoords[i++];
+        disp = bcdisp[d++];
+        if (disp ==0)
+            disp = 1e-16;
+        bcmap[tmp] = disp;
+    }
+
+    for(std::map<bcitem, double>::iterator it =  bcmap.begin(); it != bcmap.end(); ++it) {
+        coordinates.push_back(it->first.x);
+        coordinates.push_back(it->first.y);
+        coordinates.push_back(it->first.z);
+        coordinates.push_back(it->first.d);
+        values.push_back(it->second);
+    }
+    delete[] bcdisp;
+    delete[] bccoords;
+  }
+}
 
 HDF5Image::HDF5Image(std::string &fi, CPULayout &layout): _file(fi),_layout(layout), MyPID(0)
 {
@@ -39,7 +84,7 @@ HDF5Image::~HDF5Image()
 int HDF5Image::Scan(BaseGrid* grid)
 {
   Timer timer(MPI_COMM_WORLD);
-  int mpi_rank, mpi_size;
+  int mpi_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &mpi_rank);
   MPI_Comm_size(MPI_COMM_WORLD, &mpi_size);
   MyPID = mpi_rank;
@@ -55,7 +100,6 @@ int HDF5Image::Scan(BaseGrid* grid)
   grid->corner_y = 0;
   grid->corner_z = 0;
 
-  std::map<bcitem, double> bcmap;
   HDF5_GReader reader(_file);
 
   hsize_t global_dims_of_hdf5[3];
@@ -130,43 +174,8 @@ int HDF5Image::Scan(BaseGrid* grid)
 
   timer.Start("BC");
 
-  reader.GetSizeOfDataset("Fixed_Displacement_Values",global_dims_of_hdf5, 1);
-  double bc_per_cpu = ((double) global_dims_of_hdf5[0])/mpi_size;
-  hsize_t my_bc_offset = MyPID*bc_per_cpu;
-  hsize_t my_bc_upper_offset =(MyPID+1)*bc_per_cpu; //last element is not included. eg 2  then 0,1 belongs to it
-  hsize_t my_bc_count =my_bc_upper_offset - my_bc_offset;
-  if (MyPID == mpi_size -1) {
-    my_bc_upper_offset = global_dims_of_hdf5[0];
-    my_bc_count =my_bc_upper_offset - my_bc_offset;
-  }
-  
-  float *bcdisp = new float[my_bc_count];
-  reader.Read("Fixed_Displacement_Values", bcdisp, &my_bc_offset, &my_bc_count, 1);
-
-  short *bccoords = new short[my_bc_count*4];
-  reader.Read("Fixed_Displacement_Coordinates", bccoords, global_dims_of_hdf5[0], my_bc_count, 4, my_bc_offset);
-  bcitem tmp;
-  unsigned int d =0;
-  double disp;
-  for(unsigned int i=0; i < my_bc_count*4;) {
-	  tmp.z = bccoords[i++]; 
-	  tmp.y = bccoords[i++];
-	  tmp.x = bccoords[i++];
-	  tmp.d = bccoords[i++];
-	  disp = bcdisp[d++];
-	  if (disp ==0)
-	    disp = 1e-16;
-	  bcmap[tmp] = disp;
-  }
-  
-  for(std::map<bcitem, double>::iterator it =  bcmap.begin(); it != bcmap.end(); ++it) {
-	  grid->fixed_nodes_coordinates.push_back(it->first.x);
-	  grid->fixed_nodes_coordinates.push_back(it->first.y);
-	  grid->fixed_nodes_coordinates.push_back(it->first.z);
-	  grid->fixed_nodes_coordinates.push_back(it->first.d);
-	  grid->fixed_nodes_values.push_back(it->second);
-  }
     timer.Stop("BC");
+    ReadBC(reader, std::string("Fixed_Displacement"), grid->fixed_nodes_coordinates, grid->fixed_nodes_values);
     elapsed_time = timer.ElapsedTime("BC");
     PCOUT(MyPID, "Time for Reading BC: " << COUTTIME(elapsed_time) << "s\n");
     double res;
