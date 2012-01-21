@@ -176,6 +176,7 @@ int HDF5Image::Scan(BaseGrid* grid)
 
     timer.Stop("BC");
     ReadBC(reader, std::string("Fixed_Displacement"), grid->fixed_nodes_coordinates, grid->fixed_nodes_values);
+    ReadBC(reader, std::string("Loaded_Nodes"), grid->loaded_nodes_coordinates, grid->loaded_nodes_values);
     elapsed_time = timer.ElapsedTime("BC");
     PCOUT(MyPID, "Time for Reading BC: " << COUTTIME(elapsed_time) << "s\n");
     double res;
@@ -190,8 +191,10 @@ int HDF5Image::Scan(BaseGrid* grid)
    PCOUT(MyPID, "  local Dimension: " << grid->ldim[0] << " " << grid->ldim[1] << " " << grid->ldim[2] << " Resolution: " << grid->res[0] << "\n")
    PCOUT(MyPID, "  Poison's ratio: " << grid->poisons_ratio << "\n")
    
-   long num_gl_bc, num_loc_bc=grid->fixed_nodes_values.size();
-   MPI_Reduce(&num_loc_bc, &num_gl_bc, 1, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD );
-   PCOUT(MyPID, "  BC Size: " << num_gl_bc  << "\n")
+   long num_gl_bc[2], num_loc_bc[2];
+   num_loc_bc[0]=grid->fixed_nodes_values.size();
+   num_loc_bc[1]=grid->loaded_nodes_values.size();
+   MPI_Reduce(&num_loc_bc, &num_gl_bc, 2, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD );
+   PCOUT(MyPID, "  BC: Fixednodesize: " << num_gl_bc[0] << " loadednodesize " << num_gl_bc[1] << "\n")
       return 0;
   }

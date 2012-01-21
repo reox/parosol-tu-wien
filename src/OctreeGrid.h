@@ -498,12 +498,19 @@ class OctreeGrid : public BaseGrid
 		}
 
 		void GenerateBC() {
-			std::vector<t_boundary_node> index_list;
+			std::vector<t_boundary_node> fixed_index_list;
+			std::vector<t_boundary_node> loaded_index_list;
 			Distribute_the_BC(_BC_fixednode_list);
-			GetIndexOfBC(_BC_fixednode_list, index_list);
-			CheckIndexOfBC(_BC_fixednode_list, index_list);
-			bc.GenerateFixedNodeBC(index_list);
+			GetIndexOfBC(_BC_fixednode_list, fixed_index_list);
+			CheckIndexOfBC(_BC_fixednode_list, fixed_index_list);
+
+			Distribute_the_BC(_BC_LoadedNode_list);
+			GetIndexOfBC(_BC_LoadedNode_list, loaded_index_list);
+			CheckIndexOfBC(_BC_LoadedNode_list, loaded_index_list);
+			bc.GenerateBC(fixed_index_list, loaded_index_list);
+
 			Delete_BC_vector(_BC_fixednode_list);
+			Delete_BC_vector(_BC_LoadedNode_list);
 			return;
 		}
 
@@ -869,6 +876,7 @@ class OctreeGrid : public BaseGrid
 
 
 		std::vector< t_boundary_node> _BC_fixednode_list;
+		std::vector< t_boundary_node> _BC_LoadedNode_list;
 
 		//! Convert an image to a grid
 		void GenerateGrid(double elas[]);
@@ -1545,7 +1553,6 @@ void OctreeGrid<T>::GenerateOctree() {
 	// some members
 	_nr_elem =0;
 	_nr_nodes = 0;
-	_BC_fixednode_list.resize(0);
 	if (_grid == 0)
 	{
 		return;
@@ -1596,6 +1603,7 @@ void OctreeGrid<T>::GenerateOctree() {
 	_OctreeGrid.reserve(octset.size());
 	_OctreeGrid.insert(_OctreeGrid.begin(), octset.begin(), octset.end());
 
+	_BC_fixednode_list.resize(0);
 	std::set<t_boundary_node> bcset;
 	std::vector<unsigned short>::iterator it_coord; 
 	std::vector<float>::iterator it_val = fixed_nodes_values.begin();
@@ -1612,6 +1620,25 @@ void OctreeGrid<T>::GenerateOctree() {
 	}
 	_BC_fixednode_list.reserve(bcset.size());
 	_BC_fixednode_list.insert(_BC_fixednode_list.begin(), bcset.begin(), bcset.end());
+
+
+	_BC_LoadedNode_list.resize(0);
+	bcset.clear();
+	it_val = loaded_nodes_values.begin();
+	for(it_coord = loaded_nodes_coordinates.begin(); it_coord != loaded_nodes_coordinates.end(); ) {
+		unsigned short x,y,z,d;
+		float disp;
+		x = *it_coord; ++it_coord;
+		y = *it_coord; ++it_coord;
+		z = *it_coord; ++it_coord;
+		d = *it_coord; ++it_coord;
+		tmp_node = OctreeNode(KeyGen(x,y,z),-1);
+		disp = *it_val; ++it_val;
+		bcset.insert(t_boundary_node(tmp_node, boundary_disp(d,disp)));
+	}
+	_BC_LoadedNode_list.reserve(bcset.size());
+	_BC_LoadedNode_list.insert(_BC_LoadedNode_list.begin(), bcset.begin(), bcset.end());
+
 	_nr_nodes = _OctreeGrid.size();
 	return;
 }

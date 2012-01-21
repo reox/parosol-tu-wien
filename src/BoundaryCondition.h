@@ -49,16 +49,26 @@ class BoundaryCondition
 		//!FixedNodes hold the value of the BC.
 		std::vector<double> FixedNodes;
 
+		//!it holds the index of the BC to access it in the displacements array
+		std::vector<t_index> LoadedNodes_Ind;
+		//!FixedNodes hold the value of the BC.
+		std::vector<double> LoadedNodes;
+
 		//! \brief Generate BC
 		/*! It reads in the boundary nodes list in and converts it to the local data structure.  
 		 */
-		void GenerateFixedNodeBC(std::vector<t_boundary_node> &list)
+		void GenerateBC(std::vector<t_boundary_node> &fixed_list, std::vector<t_boundary_node> &loaded_list )
 		{
 			std::vector< t_boundary_node >::iterator it;
-			for(it = list.begin(); it != list.end(); it++) {
+			for(it = fixed_list.begin(); it != fixed_list.end(); it++) {
 
 					FixedNodes_Ind.push_back(it->first*3+it->second.dir);
 					FixedNodes.push_back(it->second.disp);
+			}
+			for(it = loaded_list.begin(); it != loaded_list.end(); it++) {
+
+					LoadedNodes_Ind.push_back(it->first*3+it->second.dir);
+					LoadedNodes.push_back(it->second.disp);
 			}
 
 			return;

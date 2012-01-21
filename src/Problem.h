@@ -154,10 +154,17 @@ int Problem<Grid>::Impose() {
 	_mat.Apply_NoResetBoundaries(x, b);
 	b = -1*b;
 
+    //add the loaded nodes
+	num_ind = _bcond.LoadedNodes_Ind.size();
+	for (long i=0; i<num_ind; ++i) {
+		b[_bcond.LoadedNodes_Ind[i]] += _bcond.LoadedNodes[i];
+	}
+
 	SetBoundaryConditions(b);
 	//x.setRandom(_ldofs);
 	//x.setConstant(_ldofs, 0.02);
 	x.setZero(_ldofs);
+	num_ind = _bcond.FixedNodes_Ind.size();
 	for (long i=0; i<num_ind; ++i)
 		x[_bcond.FixedNodes_Ind[i]] = _bcond.FixedNodes[i];
 	return 0;
