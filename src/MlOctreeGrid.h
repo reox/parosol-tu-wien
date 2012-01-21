@@ -317,8 +317,8 @@ void MlOctreeGrid<T>::Coarse()
 		}
 	}
 
-	OctreeGrid<T>::_BC_list.reserve(bcset.size());
-	OctreeGrid<T>::_BC_list.insert(OctreeGrid<T>::_BC_list.begin(), bcset.begin(), bcset.end());
+	OctreeGrid<T>::_BC_fixednode_list.reserve(bcset.size());
+	OctreeGrid<T>::_BC_fixednode_list.insert(OctreeGrid<T>::_BC_fixednode_list.begin(), bcset.begin(), bcset.end());
 
 	OctreeGrid<T>::init_Members();
 }

@@ -52,7 +52,7 @@ class BoundaryCondition
 		//! \brief Generate BC
 		/*! It reads in the boundary nodes list in and converts it to the local data structure.  
 		 */
-		void GenerateBC(std::vector<t_boundary_node> &list)
+		void GenerateFixedNodeBC(std::vector<t_boundary_node> &list)
 		{
 			std::vector< t_boundary_node >::iterator it;
 			for(it = list.begin(); it != list.end(); it++) {

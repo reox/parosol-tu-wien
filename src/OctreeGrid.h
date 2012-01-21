@@ -477,14 +477,15 @@ class OctreeGrid : public BaseGrid
 		/*
 		 * @brief Computes the index of the Boundary Condition.
 		 * 
-		 * @param[out] list index of the boundary condition nodes
+		 * @param[in] key_list vector of of the boundary condition nodes
+		 * @param[out] index_list vector of index of the boundary condition nodes
 		 */
-		void GetIndexOfBC(std::vector<t_boundary_node> &list) {
+		void GetIndexOfBC(std::vector< t_boundary_node> &key_list, std::vector<t_boundary_node> &index_list) {
 			std::vector<  t_boundary_node >::iterator iter;
 			t_index index;
 			t_octree_key key;
 
-			for (iter = _BC_list.begin(); iter !=_BC_list.end(); ++iter) {
+			for (iter = key_list.begin(); iter !=key_list.end(); ++iter) {
 				key = iter->first;
 				t_octree_iterator tmp = lower_bound(_OctreeGrid.begin(), _GridIteratorEnd, key); //hmhmhm
 				if (tmp != _GridIteratorEnd && !(key < *tmp))
@@ -492,21 +493,21 @@ class OctreeGrid : public BaseGrid
 				else {
 				 index = -1; COUT << "Error! index of BC not found!\n";
 				}
-				list.push_back(t_boundary_node(index, iter->second));
+				index_list.push_back(t_boundary_node(index, iter->second));
 			}
 		}
 
 		void GenerateBC() {
-			std::vector<t_boundary_node> list;
-			Distribute_the_BC();
-			GetIndexOfBC(list);
-			CheckIndexOfBC(list);
-			bc.GenerateBC(list);
-			Delete_BC_vector();
+			std::vector<t_boundary_node> index_list;
+			Distribute_the_BC(_BC_fixednode_list);
+			GetIndexOfBC(_BC_fixednode_list, index_list);
+			CheckIndexOfBC(_BC_fixednode_list, index_list);
+			bc.GenerateFixedNodeBC(index_list);
+			Delete_BC_vector(_BC_fixednode_list);
 			return;
 		}
 
-		void Distribute_the_BC()
+		void Distribute_the_BC(std::vector< t_boundary_node> &_BC_list)
 		{
 			std::vector<int> send_count(_Nr_CPU);
 			std::vector<int> send_pos(_Nr_CPU);
@@ -567,7 +568,7 @@ class OctreeGrid : public BaseGrid
 			for(unsigned r =0; r < new_bc_list.size(); r++)
 				bc_set.insert(new_bc_list[r]);
 			Delete_BC_vector(new_bc_list);
-			Delete_BC_vector();
+			Delete_BC_vector(_BC_list);
 			_BC_list.reserve(bc_set.size());
 			_BC_list.insert(_BC_list.begin(), bc_set.begin(), bc_set.end());
 			
@@ -577,10 +578,6 @@ class OctreeGrid : public BaseGrid
 		/** 
 		 * @brief Deletes the temporary storage of the boundary condition
 		 */
-		void Delete_BC_vector() {
-			std::vector< t_boundary_node > tmp;
-			_BC_list.swap(tmp);
-		}
 		void Delete_BC_vector(std::vector< t_boundary_node > &x) {
 			std::vector< t_boundary_node> tmp;
 			x.swap(tmp);
@@ -690,12 +687,12 @@ class OctreeGrid : public BaseGrid
 
 
 
-		bool CheckIndexOfBC(std::vector<t_boundary_node> &list) {
-			std::vector< t_boundary_node>::iterator BC_iter = _BC_list.begin();
-			std::vector<t_boundary_node>::iterator list_iter = list.begin();
+		bool CheckIndexOfBC(std::vector< t_boundary_node> &key_list, std::vector<t_boundary_node> &index_list) {
+			std::vector< t_boundary_node>::iterator BC_iter = key_list.begin();
+			std::vector<t_boundary_node>::iterator list_iter = index_list.begin();
 			bool ret = true;
 
-			for(;list_iter != list.end(); ++list_iter, ++BC_iter) {
+			for(;list_iter != index_list.end(); ++list_iter, ++BC_iter) {
 				if (_OctreeGrid[list_iter->first] != BC_iter->first) {
 					COUT << "BC key: " << BC_iter->first << " OCT Key " << _OctreeGrid[list_iter->first] << std::endl;
 					ret = false;
@@ -871,7 +868,7 @@ class OctreeGrid : public BaseGrid
 		
 
 
-		std::vector< t_boundary_node> _BC_list;
+		std::vector< t_boundary_node> _BC_fixednode_list;
 
 		//! Convert an image to a grid
 		void GenerateGrid(double elas[]);
@@ -1548,7 +1545,7 @@ void OctreeGrid<T>::GenerateOctree() {
 	// some members
 	_nr_elem =0;
 	_nr_nodes = 0;
-	_BC_list.resize(0);
+	_BC_fixednode_list.resize(0);
 	if (_grid == 0)
 	{
 		return;
@@ -1613,8 +1610,8 @@ void OctreeGrid<T>::GenerateOctree() {
 		disp = *it_val; ++it_val;
 		bcset.insert(t_boundary_node(tmp_node, boundary_disp(d,disp)));
 	}
-	_BC_list.reserve(bcset.size());
-	_BC_list.insert(_BC_list.begin(), bcset.begin(), bcset.end());
+	_BC_fixednode_list.reserve(bcset.size());
+	_BC_fixednode_list.insert(_BC_fixednode_list.begin(), bcset.begin(), bcset.end());
 	_nr_nodes = _OctreeGrid.size();
 	return;
 }
@@ -1629,7 +1626,7 @@ std::ostream& OctreeGrid<T>::print(std::ostream& stream) const
 	stream << "   Nr. Nodes: " << _nr_nodes << " Nr. Elements: "<< _nr_elem << "\n";
 	stream << "   elemental density: " << ((float) _nr_elem) / ldim_z / ldim_x / ldim_y << "\n";
 	stream << "   nodal density: " <<((float) _nr_nodes) / (ldim_z+1) / (ldim_x+1) / (ldim_y+1) << "\n";
-	//stream << "   Number BCs: " << _BC_list.size() << " capacity  " << _BC_list.capacity() << std::endl;
+	//stream << "   Number BCs: " << _BC_fix.size() << " capacity  " << _BC_fix.capacity() << std::endl;
 	stream << bc;
 	return stream;
 }
