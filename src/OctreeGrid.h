@@ -1650,10 +1650,9 @@ std::ostream& OctreeGrid<T>::print(std::ostream& stream) const
 	stream << "   local Dimension: " << ldim[0] << ", " << ldim[1] << ", " << ldim[2]  << "\n";
 	stream << "   global Dimension: " <<gdim[0] << ", " << gdim[1] << ", " << gdim[2]  << "\n";
 	stream << "   Resolution: " << res[0] << ", " << res[1] << ", " << res[2]  << "\n";
-	stream << "   Nr. Nodes: " << _nr_nodes << " Nr. Elements: "<< _nr_elem << "\n";
-	stream << "   elemental density: " << ((float) _nr_elem) / ldim_z / ldim_x / ldim_y << "\n";
-	stream << "   nodal density: " <<((float) _nr_nodes) / (ldim_z+1) / (ldim_x+1) / (ldim_y+1) << "\n";
-	//stream << "   Number BCs: " << _BC_fix.size() << " capacity  " << _BC_fix.capacity() << std::endl;
+	stream << "   Global Nr. Nodes: " << _nr_nodes_global << " Global Nr. Elements: "<< _nr_elem_global << "\n";
+	stream << "   elemental density: " << ((float) _nr_elem_global) / gdim_z / gdim_x / gdim_y << "\n";
+	stream << "   nodal density: " <<((float) _nr_nodes_global) / (gdim_z+1) / (gdim_x+1) / (gdim_y+1) << "\n";
 	stream << bc;
 	return stream;
 }

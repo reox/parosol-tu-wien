@@ -134,7 +134,7 @@ int main( int argc, char* argv[])
 
     //Construct the preconditioner
 	timer.Start("Prec");
-	MlCycle<OctreeKey_Lookup>  prec(grid, matr, degree, level, 0, 16,0);
+	MlCycle<OctreeKey_Lookup>  prec(grid, matr, degree, level-1, 0, 16,0);
 	PCOUT(MyPID, "Prec done\n");
 	timer.Stop("Prec");
 	elapsed_time = timer.ElapsedTime("Prec");
