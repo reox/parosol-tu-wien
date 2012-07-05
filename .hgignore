@@ -1,0 +1,9 @@
+syntax: glob
+
+*.cpp.o
+build/CMakeFiles/*
+build/CMakeCache.txt
+build/Doxyfile
+build/Makefile
+build/cmake_install.cmake
+build/parosol
