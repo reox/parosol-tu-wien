@@ -18,6 +18,11 @@
 
 //g++ -Wall -lhdf5 -o AsciiToHDF5 AsciiToHDF5.cpp
 
+//Converts a .txt image into a hdf5 image and set the parameter, that are
+//needed for the simulation. The height of the image is set to 1mm.
+//
+//Two example boundary condition are implemented
+
 
 #include <iostream>
 #include <fstream>
@@ -194,7 +199,7 @@ int main (int argc, char * argv[])
 	std::string datasetname("Image");
 
 
-	//Supress error messages. If we can't create we open
+	//Suppresses error messages. If we can't create we open
 	H5E_auto2_t old_func; 
 	void *old_client_data;
 	H5Eget_auto(H5E_DEFAULT, &old_func, &old_client_data);
@@ -276,14 +281,6 @@ int main (int argc, char * argv[])
 			}
 		}
 
-		//TODO: memspace and stride
-		//#ifdef SEQUENTIAL_HDF5
-		//  plist = H5P_DEFAULT;
-		//  #else
-		//  //but collective I/O is more effective
-		//    plist = H5Pcreate(H5P_DATASET_XFER);
-		//      H5Pset_dxpl_mpio(plist, H5FD_MPIO_COLLECTIVE);
-		//
 		//change row major      
 		hdfdims_offset[2] = offset[0];
 		hdfdims_offset[1] = offset[1];

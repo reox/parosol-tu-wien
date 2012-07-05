@@ -18,6 +18,8 @@
 
 //g++ -Wall mirrorimage.cpp -o mirrorimage
 
+//3Dmirroring of a textimage. 
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>

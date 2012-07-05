@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// g++ -Wall -O2 -o statsofascii statofascii.cpp
+// g++ -Wall -O2 -o statsofascii statsofascii.cpp
 
-//This program coutns full and empty voxel
+//This program counts full and empty voxel
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -56,5 +57,6 @@ int main(int argc, char* argv[])
     }
   }
   cout << "empty: :" << mat1 << " bone: " << mat2 << " ratio: " << ((double) mat2)/ (mat1+mat2);
+  cout << endl;
   return 0;
 }

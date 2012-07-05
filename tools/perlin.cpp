@@ -1,4 +1,36 @@
+/*
+ * ParOSol: a parallel FE solver for trabecular bone modeling
+ * Copyright (C) 2011, Cyril Flaig
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 //g++ -o perlin -O3 -lnoise perlin.cpp
+
+// perlin generates an artificial bone from pseudo random number with
+// perlin noise. 
+// Most important options:
+// --seed changes the seed
+// --lowerthres and --upperthres should be symmetric around 0. With a small
+// band you get a sparse bone.
+// --fsize set the feature size. A big value means a zoom in. A small value
+// a zoom out.
+// --size[z,y,x] image size 
+// To generate the same image with different resolution fsize/size have to be
+// constant.
+
+
 #include "Image.h"
 #include "CheckForBiggestComponent.h"
 #include <noise/noise.h>

@@ -18,6 +18,8 @@
 
 //g++ FractalGenerator.cpp -o FractalGenerator
 
+//Generates a fractal with a base pattern that is read from a small image
+
 
 #include <iostream>
 #include <fstream>
@@ -105,7 +107,7 @@ void fractal(int it, image &base, image &out, int posx, int posy, int posz)
 int main(int argc, char* argv[])
 {
   if (argc < 4) {
-    cout << "usage: " << argv[0] << " numiter infile outfile";
+    cout << "usage: " << argv[0] << " NumberRecursion infile outfile";
     return 0;
     }
   int maxiter = atoi(argv[1]);
