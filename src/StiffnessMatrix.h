@@ -25,9 +25,6 @@
 #include <eigen2/Eigen/Core>
 #include "Config.h"
 
-USING_PART_OF_NAMESPACE_EIGEN
-
-
 
 //! An Interface which describes a MatrixVector Product.
 
@@ -45,7 +42,7 @@ public:
    * @param y result vector
    * @return error value
    */
-  virtual int   Apply (VectorXd &x, VectorXd &y) = 0;
+  virtual int   Apply (Eigen::VectorXd &x, Eigen::VectorXd &y) = 0;
 
   /** Name of the Operator
    * 
@@ -57,7 +54,7 @@ public:
    * 
    * @return diagonal
    */
-  virtual VectorXd& Diagonal() = 0;
+  virtual Eigen::VectorXd& Diagonal() = 0;
 
    /** Gets the number of degrees of freedom.
    * 
@@ -71,7 +68,7 @@ public:
    * @param b second vector
    * @return dot product
    */
-  virtual double dot(VectorXd &a, VectorXd &b)=0;
+  virtual double dot(Eigen::VectorXd &a, Eigen::VectorXd &b)=0;
   
   /** Gets the process id
    * @return PID
@@ -81,7 +78,7 @@ public:
   /** initializes an vector with random values according the distribution of the mesh on the computing nodes.
    * @param x vector that is filled with random numbers.
    */
-  virtual void SetVectorRandom(VectorXd &x)=0;
+  virtual void SetVectorRandom(Eigen::VectorXd &x)=0;
 };
 
 #endif /* STIFFNESSMATRIX_H */

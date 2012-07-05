@@ -6,7 +6,6 @@
 #define TRI_EIG_H
 
 #include <eigen2/Eigen/Core>
-USING_PART_OF_NAMESPACE_EIGEN
 
 //eigenvalues in diagonal
 static double Calculate_Shift(double d2, double d1, double off) 
@@ -19,14 +18,12 @@ static double Calculate_Shift(double d2, double d1, double off)
    return d1 - off / d2;
 }
 
-int QL_Tridiagonal_Symmetric_Matrix(VectorXd  &diagonal, VectorXd &p_off,
+int QL_Tridiagonal_Symmetric_Matrix(Eigen::VectorXd  &diagonal, Eigen::VectorXd &p_off,
                                    int n, int max_iteration_count)
 {
    int i, j, k;
    int iteration = 0;
    double epsilon; 
-   //double *p_off = off_diagonal + 1;
-   //double *p_off = off_diagonal;
 
    double s,c,g,h,q;
    double shift;

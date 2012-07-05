@@ -21,7 +21,6 @@
 
 #include <string>
 #include <eigen2/Eigen/Core>
-USING_PART_OF_NAMESPACE_EIGEN
 
 
 //! An interface for solvers
@@ -37,7 +36,7 @@ public:
    * @param [in] b rhs vector
    * @param [out] x solution vector
    */
-  virtual int   Solve(VectorXd &b, VectorXd &x) = 0;
+  virtual int   Solve(Eigen::VectorXd &b, Eigen::VectorXd &x) = 0;
 
   /** Returns the name of the solver
    * 

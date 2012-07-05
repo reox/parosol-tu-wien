@@ -64,10 +64,10 @@ class VTKPrinter {
 		 * @brief Writes the Mesh, solution, Partiotion, and the VonMises stress into the VTU file.
 		 */
 
-		void PrintAll(VectorXd &x, VectorXd &res) {
+		void PrintAll(Eigen::VectorXd &x, Eigen::VectorXd &res) {
 
 			PostProcess<OctreeGrid<T> > post(_grid);
-			VectorXd m, s;
+            Eigen::VectorXd m, s;
 			post.ComputeStressAndStrain(x,m,s);
 
 			std::string suffix = ".vtu";
@@ -155,7 +155,7 @@ private:
 			tmpoffset = offset+_grid.GetNrPrivateNodes();
 			UnLock(tmpoffset);
 
-			VectorXd ind(_grid.GetNrDofs());
+            Eigen::VectorXd ind(_grid.GetNrDofs());
 			_grid.Recv_import_Ghost(ind);
 			ind.setZero(_grid.GetNrDofs());
 			for (unsigned int i = 0; i < _grid.GetNrNodes(); i++) {
@@ -285,7 +285,7 @@ private:
 		 * @param x Vector that holds the dofs
 		 * @param s name of the section
 		 */
-		void PrintPointVector(std::string s, std::string file, VectorXd &x) {
+		void PrintPointVector(std::string s, std::string file, Eigen::VectorXd &x) {
 			CPU0SAVES("<DataArray type=\"Float32\" Name=\"" << s << "\" NumberOfComponents=\"3\" format=\"ascii\">")
 
 			int nr_nodes = _grid.GetNrPrivateNodes();
@@ -306,7 +306,7 @@ private:
 		 * @param x Vector that holds the dofs
 		 * @param s name of the section
 		 */
-		void PrintCellVector(std::string s, std::string file, VectorXd &x) {
+		void PrintCellVector(std::string s, std::string file, Eigen::VectorXd &x) {
 			CPU0SAVES("<DataArray type=\"Float32\" Name=\"" << s << "\" NumberOfComponents=\"1\" format=\"ascii\">")
 
 			int nr_elem = _grid.GetNrElem();

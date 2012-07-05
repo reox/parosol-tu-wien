@@ -26,7 +26,6 @@
 #include "GWriter.hpp"
 
 #include <eigen2/Eigen/Core>
-USING_PART_OF_NAMESPACE_EIGEN
 
 //! This class prints the grid and result into a HDF5 file.
 
@@ -79,7 +78,7 @@ class HDF5Printer {
 			int x =0,y=0,z=0;
 			double res[3];
 			_grid.GetRes(res);
-			VectorXf coord(_grid.GetNrPrivateNodes()*3);
+            Eigen::VectorXf coord(_grid.GetNrPrivateNodes()*3);
 			long i=0;
 			T keys;
 			t_octree_key tmp;
@@ -108,7 +107,7 @@ class HDF5Printer {
 			
 			//Quick an dirty hack:
 			//compute the offset with double
-			VectorXd ind(_grid.GetNrDofs());
+            Eigen::VectorXd ind(_grid.GetNrDofs());
 			_grid.Recv_import_Ghost(ind);
 			ind.setZero(_grid.GetNrDofs());
 			t_octree_key offset = _grid.GetNodeOffset();
@@ -136,7 +135,7 @@ class HDF5Printer {
 		
         void PrintEmoduli() {
             Writer->Select("/Mesh");
-            VectorXf emoduli(_grid.GetNrElem());
+            Eigen::VectorXf emoduli(_grid.GetNrElem());
 			t_index i =0;
 			for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements()){
 				emoduli[i]=_grid.GetElementWeight()*1000; 
@@ -147,11 +146,11 @@ class HDF5Printer {
         }
 
         //x displacement, res residuum
-		void PrintAll(VectorXd &x, VectorXd &force, VectorXd &res) {
+		void PrintAll(Eigen::VectorXd &x, Eigen::VectorXd &force, Eigen::VectorXd &res) {
 			PrintGrid();
 
 			PostProcess<OctreeGrid<T> > post(_grid);
-			VectorXd m, s, eff;
+            Eigen::VectorXd m, s, eff;
 			post.ComputeStressAndStrain(x,m,s,eff);
 			MPI_Barrier(MPI_COMM_WORLD);
 			
@@ -167,7 +166,7 @@ class HDF5Printer {
 		}
 
 		void PrintPartition(std::string dset) {
-		  VectorXi part(_grid.GetNrElem());
+          Eigen::VectorXi part(_grid.GetNrElem());
 		  part.setConstant(_grid.GetNrElem(), _MyPID);
 		  MPI_Barrier(MPI_COMM_WORLD);
 		  Writer->Write(dset, part.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 1, _grid.GetElemOffset());

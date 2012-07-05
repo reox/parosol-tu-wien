@@ -19,7 +19,7 @@
 
 #include "JacobiSmoother.h"
 
-int JacobiSmoother::Solve(VectorXd &b, VectorXd &x)
+int JacobiSmoother::Solve(Eigen::VectorXd &b, Eigen::VectorXd &x)
 {
   int it = 0;
   if (_zeroStart) {

@@ -28,22 +28,22 @@
 #include "mpi.h"
 
 /// Compute the EV of a tridiagonal symmetric matrix
-int QL_Tridiagonal_Symmetric_Matrix( VectorXd &diagonal, VectorXd &p_off,
+int QL_Tridiagonal_Symmetric_Matrix( Eigen::VectorXd &diagonal, Eigen::VectorXd &p_off,
                                    int n, int max_iteration_count);
 
-eig est_ev(StiffnessMatrix &_mat, Solver &_prec, int maxit, VectorXd &r, VectorXd &d)
+eig est_ev(StiffnessMatrix &_mat, Solver &_prec, int maxit, Eigen::VectorXd &r, Eigen::VectorXd &d)
 {
   double alpha = 0, beta =0; // in first iteration beta_old is not used
   double alpha_old, res0, delta_new, delta_old;
   double _tol = 1e-7;
-  VectorXd dia_T(maxit+1);
-  VectorXd off_T(maxit+1);
+  Eigen::VectorXd dia_T(maxit+1);
+  Eigen::VectorXd off_T(maxit+1);
   //_mat.SetVectorRandom(r);
   r.setConstant(_mat.GetNrDofs(), 1.0);
 
   int i = 0;
   _prec.Solve(r,d);
-  VectorXd s = r;
+  Eigen::VectorXd s = r;
   res0 =  delta_new = _mat.dot(r,d);
   res0 = sqrt(res0);
   while ( i < maxit && sqrt(delta_new)/res0 > _tol) {

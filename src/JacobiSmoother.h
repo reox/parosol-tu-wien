@@ -42,7 +42,7 @@ class JacobiSmoother: public Solver
 	 * @param m1 Vector, that is used to hold temporary results.
 	 */
 
-    JacobiSmoother(StiffnessMatrix &M, int Step, double w, bool ZeroStart, VectorXd &m1):
+    JacobiSmoother(StiffnessMatrix &M, int Step, double w, bool ZeroStart, Eigen::VectorXd &m1):
       _mat(M),
       _idia(M.Diagonal()),
       _step(Step),
@@ -73,7 +73,7 @@ class JacobiSmoother: public Solver
     {
     }
 
-    int Solve(VectorXd &b, VectorXd &x);
+    int Solve(Eigen::VectorXd &b, Eigen::VectorXd &x);
 
     virtual const std::string  Label () const
     {
@@ -82,11 +82,11 @@ class JacobiSmoother: public Solver
 
   protected:
     StiffnessMatrix &_mat;
-    VectorXd &_idia;
+    Eigen::VectorXd &_idia;
     int _step;
     double _w;
     bool _zeroStart;
-    VectorXd &r;
+    Eigen::VectorXd &r;
 };
 
 #endif /* JACOBIS_H */

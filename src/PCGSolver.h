@@ -56,7 +56,7 @@ class PCGSolver: public Solver
      * @param[in] b RHS
      * @param[in,out] x initial guess and solution
      */
-    virtual int Solve(VectorXd &b, VectorXd &x);
+    virtual int Solve(Eigen::VectorXd &b, Eigen::VectorXd &x);
     virtual const std::string  Label () const;
 
   protected:

@@ -26,7 +26,6 @@
 #include "GWriter.hpp"
 
 #include <eigen2/Eigen/Core>
-USING_PART_OF_NAMESPACE_EIGEN
 
 //! A class to write the result in the format that ParFE uses.
 
@@ -139,7 +138,7 @@ class HDF5ParfePrinter {
 			int x =0,y=0,z=0;
 			double res[3];
 			_grid.GetRes(res);
-			VectorXd coord(_grid.GetNrPrivateNodes()*3);
+            Eigen::VectorXd coord(_grid.GetNrPrivateNodes()*3);
 			long i=0;
 			for(iter = grid.begin(); iter != _grid._GridIteratorEnd; ++iter ) {
 				k = iter->key;
@@ -161,7 +160,7 @@ class HDF5ParfePrinter {
 			
 			//Quick an dirty hack:
 			//compute the offset with double
-			VectorXd ind(_grid.GetNrDofs());
+            Eigen::VectorXd ind(_grid.GetNrDofs());
 			_grid.Recv_import_Ghost(ind);
 			ind.setZero(_grid.GetNrDofs());
 			t_octree_key offset = _grid.GetNodeOffset();
@@ -182,12 +181,12 @@ class HDF5ParfePrinter {
 			delete[] elems;
 		}
 		
-        void PrintAll(VectorXd &x, VectorXd &force, VectorXd &res) {
+        void PrintAll(Eigen::VectorXd &x, Eigen::VectorXd &force, Eigen::VectorXd &res) {
 
 			PrintGrid();
 
 			PostProcess<OctreeGrid<T> > post(_grid);
-			VectorXd m, s, eff;
+            Eigen::VectorXd m, s, eff;
 			post.ComputeStressAndStrain(x,m,s,eff);
 			MPI_Barrier(MPI_COMM_WORLD);
 			

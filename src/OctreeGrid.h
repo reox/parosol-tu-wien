@@ -41,7 +41,6 @@
 
 #include <iterator>
 
-using namespace Eigen;
 
 //Activate for debugging
 #define DOUT(msg)
@@ -371,7 +370,7 @@ class OctreeGrid : public BaseGrid
 		 * @param x Source vector
 		 * @param pref fixed size vector
 		 */
-		void GetNodalDisplacementsOfElement(VectorXd &x, Matrix<double, 24, 1> &pref)
+		void GetNodalDisplacementsOfElement(Eigen::VectorXd &x, Eigen::Matrix<double, 24, 1> &pref)
 		{
 			SearchIndexes();
 
@@ -392,7 +391,7 @@ class OctreeGrid : public BaseGrid
 		 * @param pref fixed size vector with 24 values that are summed into the vector
 		 * @param factor x+= factor * pref
 		 */
-		void SumInToNodalDisplacementsOfElement(VectorXd &x, Matrix<double, 24, 1> &pref, double factor)
+		void SumInToNodalDisplacementsOfElement(Eigen::VectorXd &x, Eigen::Matrix<double, 24, 1> &pref, double factor)
 		{
 			for(int i =0; i<8;i++) {
 				for(t_index j=0; j < 3; ++j) 
@@ -610,7 +609,7 @@ class OctreeGrid : public BaseGrid
 			}
 
 		}
-		void PrintVector(VectorXd &x) {
+		void PrintVector(Eigen::VectorXd &x) {
 			unsigned numberelem = _GridIteratorEnd - _OctreeGrid.begin();
 			numberelem *=3;
 			MPI_Barrier(MPI_COMM_WORLD);
@@ -751,7 +750,7 @@ class OctreeGrid : public BaseGrid
 		/** 
 		 * @brief Sends the data of the import process
 		 */
-		void Send_import_Ghost(VectorXd &disp)
+		void Send_import_Ghost(Eigen::VectorXd &disp)
 		{
 			t_index ind;
 			for(unsigned i=0;i < _remote_elements_index.size(); i++)
@@ -773,7 +772,7 @@ class OctreeGrid : public BaseGrid
 		/** 
 		 * @brief Post the receives of the import process
 		 */
-		void Recv_import_Ghost(VectorXd &disp)
+		void Recv_import_Ghost(Eigen::VectorXd &disp)
 		{
 			int offset = _GridIteratorEnd - _OctreeGrid.begin();
 			for(unsigned i =0;i < _sending_elements_pid.size(); i++) {
@@ -787,7 +786,7 @@ class OctreeGrid : public BaseGrid
 		/** 
 		 * @brief Sends the data of the export process
 		 */
-		void Send_export_Ghost(VectorXd &disp)
+		void Send_export_Ghost(Eigen::VectorXd &disp)
 		{
 			int offset = _GridIteratorEnd-_OctreeGrid.begin();
 			for(unsigned i =0;i < _sending_elements_pid.size(); i++) {
@@ -814,7 +813,7 @@ class OctreeGrid : public BaseGrid
 		/** 
 		 * @brief Waits of all cpu in the export process and sum it into the local nodes
 		 */
-		void WaitAndCopy_export_Ghost(VectorXd &disp) {
+		void WaitAndCopy_export_Ghost(Eigen::VectorXd &disp) {
 			MPI_Waitall(_remote_elements_pid.size(), _remote_request, _remote_status);
 			MPI_Waitall(_sending_elements_pid.size(), _sending_request, _sending_status);
 			t_index ind;
@@ -832,7 +831,7 @@ class OctreeGrid : public BaseGrid
 		/** 
 		 * @brief Computes the dot product of two vectors that correspond to the grid. 
 		 */
-		double dot(VectorXd &vx, VectorXd &vy)
+		double dot(Eigen::VectorXd &vx, Eigen::VectorXd &vy)
 		{
 			double localdot =0;
 			double globaldot =0;
@@ -1435,7 +1434,7 @@ bool Refine_Buckets(std::set<t_octree_key> &bucketsboarder, std::vector<t_octree
 		 * @param fix fixed size vector
 		 * @param l index of the block with size 3 in fix
 		 */
-		void Copy3(VectorXd &x, t_index k, Matrix<double, 24, 1> &fix, t_index l)
+		void Copy3(Eigen::VectorXd &x, t_index k, Eigen::Matrix<double, 24, 1> &fix, t_index l)
 		{
 			for(t_index i=0; i < 3; ++i) 
 				fix[3*l+i] = x[3*k+i];

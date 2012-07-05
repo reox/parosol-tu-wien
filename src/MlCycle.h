@@ -69,7 +69,7 @@ class MlCycle : public Solver
 			delete postsmoother;
 		}
 
-		int Solve(VectorXd& b, VectorXd& x);
+		int Solve(Eigen::VectorXd& b, Eigen::VectorXd& x);
 
 		const std::string Label() const
 		{
@@ -86,7 +86,7 @@ class MlCycle : public Solver
 		int _level;
 		double _w;
 
-		VectorXd r_fine, e_fine, r_coarse, e_coarse;
+        Eigen::VectorXd r_fine, e_fine, r_coarse, e_coarse;
 
 		MlOctreeGrid<T> * _coarsegrid;
 		GenericMatrix<OctreeGrid<T> > * _coarsemat;
@@ -146,13 +146,13 @@ MlCycle<T>::MlCycle(OctreeGrid<T> &finegrid, GenericMatrix<OctreeGrid<T> > &mat,
 
 
 	template <class T>
-int MlCycle<T>::Solve(VectorXd& b, VectorXd& x)
+int MlCycle<T>::Solve(Eigen::VectorXd& b, Eigen::VectorXd& x)
 {
 	long nrdofs = _finemat.GetNrDofs();
 #ifdef DEBOUT
 	PrintVector<OctreeKey_Lookup> fine_converter(_finegrid);
 	PrintVector<OctreeKey_Lookup> coarse_converter(*_coarsegrid);
-	VectorXd debr(nrdofs);
+    Eigen::VectorXd debr(nrdofs);
 	x.setZero(nrdofs);
 	_finemat.Apply(x, debr);
 	debr = b - debr;

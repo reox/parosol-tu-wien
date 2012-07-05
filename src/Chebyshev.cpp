@@ -22,7 +22,7 @@
 #include "est_ev.h"
 #include "Jacobi.h"
 
-Chebyshev::Chebyshev(StiffnessMatrix &M, int degree, bool ZeroStart, VectorXd &m1, VectorXd &m2, int maxit, double lmax, double lmin, double ratio):
+Chebyshev::Chebyshev(StiffnessMatrix &M, int degree, bool ZeroStart, Eigen::VectorXd &m1, Eigen::VectorXd &m2, int maxit, double lmax, double lmin, double ratio):
   _mat(M),
   _idia(M.Diagonal()),
   _ldofs(M.GetNrDofs()),
@@ -59,7 +59,7 @@ Chebyshev::Chebyshev(Chebyshev &old, bool ZeroStart):
 {
 }
 
-int Chebyshev::Solve(VectorXd &b, VectorXd &x)
+int Chebyshev::Solve(Eigen::VectorXd &b, Eigen::VectorXd &x)
 {
 //  std:: cout << "solve with:\n";
 //  std::cout << "lmax = " << _lmax << "   lmin = " << _lmin << endl;

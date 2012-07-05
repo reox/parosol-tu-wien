@@ -33,7 +33,7 @@ PCGSolver::~PCGSolver()
 {
 }
 
-int PCGSolver::Solve(VectorXd &r, VectorXd &x)
+int PCGSolver::Solve(Eigen::VectorXd &r, Eigen::VectorXd &x)
 {
   int MyPID = _mat.GetPID();
   std::ios_base::fmtflags origflag; 
@@ -43,13 +43,13 @@ int PCGSolver::Solve(VectorXd &r, VectorXd &x)
   }
   double alpha, res0, delta_new, delta_old, beta,norm;
   int i = 0;
-  //VectorXd r = b;
-  VectorXd d(_mat.GetNrDofs());  
+  //Eigen::VectorXd r = b;
+  Eigen::VectorXd d(_mat.GetNrDofs());  
   _mat.Apply(x,d);
   //residual
   r = r - d;
   _prec.Solve(r,d);
-  VectorXd s = r;
+  Eigen::VectorXd s = r;
   res0 =  delta_new = _mat.dot(r,d);
   res0 = sqrt(res0);
   double resreal0 = sqrt(_mat.dot(r,r));

@@ -94,7 +94,7 @@ class PrintVector {
 		 * @param [in] block number of points per node
 		 * @param [in] normal Vector in lexicographical order
 		 */
-		void NormalToOctgrid(const VectorXd &normal, VectorXd &oct, t_index block)
+		void NormalToOctgrid(const Eigen::VectorXd &normal, Eigen::VectorXd &oct, t_index block)
 		{
 			t_index ind;
 			for(t_coord zi =0; zi < z; zi++) {
@@ -117,7 +117,7 @@ class PrintVector {
 		 * @param [in] block number of points per node
 		 * @param [out] normal Vector in lexicographical order
 		 */
-		void OctgridToNormal(const VectorXd &oct, VectorXd &normal, int block)
+		void OctgridToNormal(const Eigen::VectorXd &oct, Eigen::VectorXd &normal, int block)
 		{
 			normal.setZero(x*y*z*block);
 			t_octree_key k;
@@ -156,8 +156,8 @@ class PrintVector {
 		 * @param [in] v Vector in morton ordering
 		 * @param [in] block number of points per node
 		 */
-		void PrintVectorOct(const VectorXd v, t_coord block) {
-			VectorXd norm(x*y*z*block);
+		void PrintVectorOct(const Eigen::VectorXd v, t_coord block) {
+            Eigen::VectorXd norm(x*y*z*block);
 			OctgridToNormal(v, norm, block);
 			PrintVectorNormal(norm, block);
 			return;
@@ -169,7 +169,7 @@ class PrintVector {
 		 * @param [in] v Vector in morton ordering
 		 * @param [in] block number of points per node
 		 */
-		void PrintVectorNormal(const VectorXd v, t_coord block)
+		void PrintVectorNormal(const Eigen::VectorXd v, t_coord block)
 		{
 			int i;
 			for(t_coord zi =0; zi < z; zi++) {

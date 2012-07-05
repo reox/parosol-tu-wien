@@ -47,8 +47,8 @@ class MlOctreeGrid : public OctreeGrid<T>
 		{
 		}
 
-		void Restrict(VectorXd &fine, VectorXd &coarse);
-		void Prolongate(VectorXd &coarse, VectorXd &fine);
+		void Restrict(Eigen::VectorXd &fine, Eigen::VectorXd &coarse);
+		void Prolongate(Eigen::VectorXd &coarse, Eigen::VectorXd &fine);
 
 	private:
 		void Coarse();
@@ -77,7 +77,7 @@ class MlOctreeGrid : public OctreeGrid<T>
 
 		}
 
-		int SetBoundaryNodes(BoundaryCondition &bc , VectorXd &x)
+		int SetBoundaryNodes(BoundaryCondition &bc , Eigen::VectorXd &x)
 		{
 			t_index num_ind = bc.FixedNodes_Ind.size();
 			// write the disp in the vector 
@@ -324,7 +324,7 @@ void MlOctreeGrid<T>::Coarse()
 }
 
 	template <class T>
-void MlOctreeGrid<T>::Restrict(VectorXd &fine, VectorXd &coarse)
+void MlOctreeGrid<T>::Restrict(Eigen::VectorXd &fine, Eigen::VectorXd &coarse)
 {
 	_finegrid.Recv_import_Ghost(fine);
 	_finegrid.Send_import_Ghost(fine);
@@ -387,7 +387,7 @@ void MlOctreeGrid<T>::Restrict(VectorXd &fine, VectorXd &coarse)
 }
 
 template <class T>
-void MlOctreeGrid<T>::Prolongate(VectorXd &coarse, VectorXd &fine)
+void MlOctreeGrid<T>::Prolongate(Eigen::VectorXd &coarse, Eigen::VectorXd &fine)
 {
 	OctreeGrid<T>::Recv_import_Ghost(coarse);
 	SetBoundaryNodes(OctreeGrid<T>::bc, coarse);

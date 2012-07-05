@@ -41,7 +41,7 @@ class PostProcess
 		//! ElementByElementMatrix destructor
 		~PostProcess() { }
 
-		void ComputeStressAndStrain(VectorXd &disp, VectorXd &VonMises, VectorXd &SED, VectorXd &eff) {
+		void ComputeStressAndStrain(Eigen::VectorXd &disp, Eigen::VectorXd &VonMises, Eigen::VectorXd &SED, Eigen::VectorXd &eff) {
 			//fetch the nodes of the neighbours
 			_grid.Recv_import_Ghost(disp);
 			_grid.Send_import_Ghost(disp);
@@ -72,7 +72,7 @@ class PostProcess
 
 			//fetch the 24 values in pref and store store
 			// res = K_e * xpref
-			Matrix<double,24,1> xpref;
+            Eigen::Matrix<double,24,1> xpref;
 			int nr_ele = 0;
 
 			_grid.Wait_import_Ghost();

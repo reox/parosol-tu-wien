@@ -37,7 +37,7 @@ class Jacobi: public Solver
 		{
 		}
 
-		virtual int Solve(VectorXd &b, VectorXd &x)
+		virtual int Solve(Eigen::VectorXd &b, Eigen::VectorXd &x)
 		{
 			x = (_idia.cwise() * b).lazy();  
 			return 0;
@@ -48,7 +48,7 @@ class Jacobi: public Solver
 		}
 
 	protected:
-		VectorXd &_idia;
+        Eigen::VectorXd &_idia;
 		long _ldofs;
 		long _maxIter;
 };

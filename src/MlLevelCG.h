@@ -37,7 +37,7 @@ class MlLevelCG: public Solver
     {
     }
 
-    virtual int Solve(VectorXd &b, VectorXd &x) {
+    virtual int Solve(Eigen::VectorXd &b, Eigen::VectorXd &x) {
       return solver.Solve(b,x);
     }
 

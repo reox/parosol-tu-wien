@@ -49,7 +49,7 @@ class Chebyshev: public Solver
 	   * @param lmin Estimation of the smallest eigenvalue. (Default 0 -> means not used)
 	   * @param ratio Ratio of lmax/lmin. It is used to compute lmin.
 	   */
-    Chebyshev(StiffnessMatrix &M, int  degree, bool ZeroStart, VectorXd &m1, VectorXd &m2, int maxit = 10,  double lmax = 0, double lmin = 0, double ratio=16); 
+    Chebyshev(StiffnessMatrix &M, int  degree, bool ZeroStart, Eigen::VectorXd &m1, Eigen::VectorXd &m2, int maxit = 10,  double lmax = 0, double lmin = 0, double ratio=16); 
 	/**
 	 * @brief This constructor copies the configuration of the old chebyshev solver. ZeroStart must be extra set.
 	 *
@@ -67,7 +67,7 @@ class Chebyshev: public Solver
 	 * @param[in] b RHS
 	 * @param[in,out] x initial guess and solution
 	 */
-    virtual int Solve(VectorXd &b, VectorXd &x);
+    virtual int Solve(Eigen::VectorXd &b, Eigen::VectorXd &x);
 
     virtual const std::string  Label () const
     {
@@ -76,13 +76,13 @@ class Chebyshev: public Solver
 
   protected:
     StiffnessMatrix &_mat;
-    VectorXd &_idia;
+    Eigen::VectorXd &_idia;
     long _ldofs;
     long _degree;
     double _lmax, _lmin;
     bool _zeroStart;
 
-    VectorXd &z,&p;
+    Eigen::VectorXd &z,&p;
 };
 
 #endif /* CHEBYSHEV_H */

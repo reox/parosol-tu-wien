@@ -31,8 +31,6 @@
 
 void decarbenz(double  *Y, double  *X);
 
-USING_PART_OF_NAMESPACE_EIGEN
-
 //! A class to perform an matrix-vector product for elasticity problem based on grid
 
 /*! The GenericMatrix class is used to multiply a vector by the global stiffness
@@ -56,7 +54,7 @@ class GenericMatrix: public StiffnessMatrix
 		 *  @param [in] x input vector
 		 *  @param [out] y output vector
 		 */
-		int  Apply (VectorXd &x, VectorXd &y);
+		int  Apply (Eigen::VectorXd &x, Eigen::VectorXd &y);
 
 		/** This application of the matrix will not apply the boundary condition. It uses the indefinite matrix.
 		 *  This function needs communication.
@@ -64,7 +62,7 @@ class GenericMatrix: public StiffnessMatrix
 		 *  @param [in] x input vector
 		 *  @param [out] y output vector
 		 */
-		int Apply_NoResetBoundaries(VectorXd &x, VectorXd &y);
+		int Apply_NoResetBoundaries(Eigen::VectorXd &x, Eigen::VectorXd &y);
 
 		inline virtual const std::string  Label () const
 		{
@@ -75,7 +73,7 @@ class GenericMatrix: public StiffnessMatrix
 		int PrepareApply();
 
 		//!Extract the Diagonal
-		VectorXd& Diagonal();
+        Eigen::VectorXd& Diagonal();
 
 		Grid& GetGrid() {
 			return _grid;
@@ -97,7 +95,7 @@ class GenericMatrix: public StiffnessMatrix
 		 *  @param a first input vector
 		 *  @param b second input vector
 		 */
-		double dot(VectorXd &a, VectorXd &b)
+		double dot(Eigen::VectorXd &a, Eigen::VectorXd &b)
 		{
 			return _grid.dot(a,b);
 		}
@@ -111,7 +109,7 @@ class GenericMatrix: public StiffnessMatrix
 		int GetPID() {
 			return MyPID;
 		}
-		void SetVectorRandom(VectorXd &x)
+		void SetVectorRandom(Eigen::VectorXd &x)
 		{
 			x.setRandom(GetNrDofs());
 			x.setRandom(GetNrDofs());
@@ -128,14 +126,14 @@ class GenericMatrix: public StiffnessMatrix
 
 
 	private:
-		void ResetBoundaries(VectorXd &y);
-		void SetBoundaries(VectorXd &, VectorXd &) const;
+		void ResetBoundaries(Eigen::VectorXd &y);
+		void SetBoundaries(Eigen::VectorXd &, Eigen::VectorXd &) const;
 
-		Matrix<double, 24, 24>  *_stiffnessmatrix;
+        Eigen::Matrix<double, 24, 24>  *_stiffnessmatrix;
 		double* _matprop;
 		t_index _mydofs;
 		Grid& _grid;
-		VectorXd *_dia;
+        Eigen::VectorXd *_dia;
 
 		std::vector<double> _stored_disp;
 
@@ -173,7 +171,7 @@ class GenericMatrix: public StiffnessMatrix
 	grid.GetRes(GridDim);
 	setcoord(GridDim,coord);
 
-	_stiffnessmatrix = new Matrix<double, 24, 24>;
+	_stiffnessmatrix = new Eigen::Matrix<double, 24, 24>;
 	double *tmpstiff = new double[24*24];
 
 	Stiffness_Matrix(_matprop, NumMaterialProps,
@@ -205,7 +203,7 @@ GenericMatrix<Grid>::~GenericMatrix()
 }
 
 	template <class Grid>
-int  GenericMatrix<Grid>::Apply(VectorXd &x, VectorXd &y)
+int  GenericMatrix<Grid>::Apply(Eigen::VectorXd &x, Eigen::VectorXd &y)
 {
 	//Store the values on boundary... replace it with 0
 	ResetBoundaries(x);
@@ -220,7 +218,7 @@ int  GenericMatrix<Grid>::Apply(VectorXd &x, VectorXd &y)
 }
 
 	template <class Grid>
-int GenericMatrix<Grid>::Apply_NoResetBoundaries(VectorXd &x, VectorXd &y)
+int GenericMatrix<Grid>::Apply_NoResetBoundaries(Eigen::VectorXd &x, Eigen::VectorXd &y)
 {
 	Timing.Restart("Apply");
 	//fetch the nodes of the neighbours
@@ -230,8 +228,8 @@ int GenericMatrix<Grid>::Apply_NoResetBoundaries(VectorXd &x, VectorXd &y)
 
 	//fetch the 24 values in pref and store store
 	// res = K_e * xpref
-	Matrix<double,24,1> xpref;
-	Matrix<double,24,1> res;
+    Eigen::Matrix<double,24,1> xpref;
+    Eigen::Matrix<double,24,1> res;
 	int nr_ele = 0;
 
 	y.setZero(_mydofs);
@@ -256,14 +254,14 @@ int GenericMatrix<Grid>::Apply_NoResetBoundaries(VectorXd &x, VectorXd &y)
 }
 
 template <class Grid>
-VectorXd& GenericMatrix<Grid>::Diagonal()
+Eigen::VectorXd& GenericMatrix<Grid>::Diagonal()
 {
 	if (_dia == 0) {
 		_grid.Recv_export_Ghost();
-		VectorXd* diagonal = new VectorXd(_mydofs);
+        Eigen::VectorXd* diagonal = new Eigen::VectorXd(_mydofs);
 		diagonal->setZero(_mydofs);
 
-		Matrix<double,24,1> res;
+        Eigen::Matrix<double,24,1> res;
 		for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements()){
 			for(int i = 0; i <24; i++) {
 				res[i] = _stiffnessmatrix->operator()(i,i);
@@ -317,7 +315,7 @@ int GenericMatrix<Grid>::PrepareApply()
 	return 0;
 }
 template <class Grid>
-void GenericMatrix<Grid>::SetBoundaries(VectorXd &y, VectorXd &x) const
+void GenericMatrix<Grid>::SetBoundaries(Eigen::VectorXd &y, Eigen::VectorXd &x) const
 {
 	t_index i = 0;
 	std::vector<t_index>::const_iterator it;
@@ -330,7 +328,7 @@ void GenericMatrix<Grid>::SetBoundaries(VectorXd &y, VectorXd &x) const
 
 //! Sets all boundary nodes (both fixed and restrained) to zero.
 template <class Grid>
-void GenericMatrix<Grid>::ResetBoundaries(VectorXd &y)
+void GenericMatrix<Grid>::ResetBoundaries(Eigen::VectorXd &y)
 {
 	t_index i =0;
 	std::vector<t_index>::const_iterator it;

@@ -42,8 +42,8 @@ class Problem
 		{
 
 			//allocate the LHS and RHS. Value are set through the BC
-			_x = new VectorXd(_ldofs);
-			_b = new VectorXd(_ldofs);
+			_x = new Eigen::VectorXd(_ldofs);
+			_b = new Eigen::VectorXd(_ldofs);
 		}
 
 		//! Problem destructor
@@ -66,7 +66,7 @@ class Problem
 
 		//! Start the solver
 		int Solve() {
-			VectorXd tmp = *_b; // The solver may change b
+            Eigen::VectorXd tmp = *_b; // The solver may change b
 			return solver->Solve(tmp,*_x);
 		}
 		long _ldofs;
@@ -74,15 +74,15 @@ class Problem
 		/** Gets the solution
 		 * @return a refence to the solution vector
 		 */
-		VectorXd & GetSol() {
+        Eigen::VectorXd & GetSol() {
 			return *_x;
 		}
 		
 		/** Gets the residual vector
 		 * @return a refence to a the residual vector
 		 */
-		VectorXd & GetRes() {
-			VectorXd *tmp = new VectorXd(*_x);
+        Eigen::VectorXd & GetRes() {
+            Eigen::VectorXd *tmp = new Eigen::VectorXd(*_x);
 			_mat.Apply(*_x, *tmp);
 			*tmp = *_b -*tmp;
 			return *tmp;
@@ -92,7 +92,7 @@ class Problem
 		 * @return the residuum
 		 */
 		double Res() {
-			VectorXd tmp =*_x;
+            Eigen::VectorXd tmp =*_x;
 			_mat.Apply(*_x, tmp);
 			tmp = *_b -tmp;
 			return sqrt(_mat.dot(tmp,tmp));
@@ -106,8 +106,8 @@ class Problem
 		 * @param x vector that is compared to the solution of the problem
 		 * @return the norm of the difference
 		 */
-		double CompareSol(VectorXd &x) {
-		VectorXd tmp = x - *_x;
+		double CompareSol(Eigen::VectorXd &x) {
+            Eigen::VectorXd tmp = x - *_x;
 			return sqrt(_mat.dot(tmp,tmp));
 		}
 		//! Print solutioin vector
@@ -124,10 +124,10 @@ class Problem
 
 	private:
 		//! Helper function which set BC on the RHS
-		int SetBoundaryConditions(VectorXd &rhs);
+		int SetBoundaryConditions(Eigen::VectorXd &rhs);
 		GenericMatrix<Grid> &_mat;
 		BoundaryCondition &_bcond;
-		VectorXd *_x, *_b;
+        Eigen::VectorXd *_x, *_b;
 		Solver *solver;
 };
 
@@ -135,8 +135,8 @@ template <class Grid>
 int Problem<Grid>::Impose() {
 
 	//renaming
-	VectorXd &x = *_x;
-	VectorXd &b = *_b;
+    Eigen::VectorXd &x = *_x;
+    Eigen::VectorXd &b = *_b;
 	x.setZero(_ldofs);
 	//Store Loads in B
 	//At the moment none load supported
@@ -171,7 +171,7 @@ int Problem<Grid>::Impose() {
 }
 
 template <class Grid>
-int Problem<Grid>::SetBoundaryConditions(VectorXd &rhs)
+int Problem<Grid>::SetBoundaryConditions(Eigen::VectorXd &rhs)
 {
 	long num_ind = _bcond.FixedNodes_Ind.size();
 	// write the disp in the vector 

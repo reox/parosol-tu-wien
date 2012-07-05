@@ -42,7 +42,7 @@ class MlLevelCheb: public Solver
     {
     }
 
-    virtual int Solve(VectorXd &b, VectorXd &x) {
+    virtual int Solve(Eigen::VectorXd &b, Eigen::VectorXd &x) {
       return solver.Solve(b,x);
     }
 
@@ -51,7 +51,7 @@ class MlLevelCheb: public Solver
       return "Chebishev\n";
     }
   private:
-	VectorXd a,b;
+    Eigen::VectorXd a,b;
     Chebyshev solver;
 
 };

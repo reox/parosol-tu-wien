@@ -186,7 +186,7 @@ void print(GenericMatrix<T> &matr, Problem<T> &problem, std::string file, int My
 	matr.PrintTimings();
 	timer.Start("Write");
     int dofs = matr.GetGrid().GetNrDofs();
-    VectorXd force(dofs);
+    Eigen::VectorXd force(dofs);
     matr.Apply_NoResetBoundaries(problem.GetSol(), force);
 	print.PrintAll(problem.GetSol(), force, problem.GetRes());
 	timer.Stop("Write");
@@ -198,7 +198,7 @@ template <class T>
 void mflops(GenericMatrix<T> &matr, int MyPID) {
 	Timer timer(MPI_COMM_WORLD);
 	int dofs = matr.GetGrid().GetNrDofs(); 
-	VectorXd a,b;
+    Eigen::VectorXd a,b;
 	a.setRandom(dofs);
 	b.setZero(dofs);
 	t_octree_key globalelem = matr.GetGrid().GetNrElemGlobal();

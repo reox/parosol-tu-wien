@@ -36,5 +36,5 @@ struct eig{
  * @param m2 temporary Vector, that is needed for the computation.
  */
 
-eig est_ev(StiffnessMatrix &_mat, Solver &_prec, int maxint, VectorXd &m1, VectorXd &m2);
+eig est_ev(StiffnessMatrix &_mat, Solver &_prec, int maxint, Eigen::VectorXd &m1, Eigen::VectorXd &m2);
 #endif /* EST_EV_H */
