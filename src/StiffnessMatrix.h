@@ -22,7 +22,7 @@
 #define STIFFNESSMATRIX_H
 
 #include <string>
-#include <eigen2/Eigen/Core>
+#include <eigen3/Eigen/Core>
 #include "Config.h"
 
 

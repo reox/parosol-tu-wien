@@ -25,7 +25,7 @@
 #include "Postprocessing.h"
 #include "GWriter.hpp"
 
-#include <eigen2/Eigen/Core>
+#include <eigen3/Eigen/Core>
 
 //! A class to write the result in the format that ParFE uses.
 

@@ -25,7 +25,7 @@
 #include "Postprocessing.h"
 #include "GWriter.hpp"
 
-#include <eigen2/Eigen/Core>
+#include <eigen3/Eigen/Core>
 
 //! This class prints the grid and result into a HDF5 file.
 

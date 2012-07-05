@@ -19,6 +19,8 @@
 #ifndef PCGSOLVER_H
 #define PCGSOLVER_H
 
+#include <iostream>
+
 #include "Solver.h"
 
 #include "StiffnessMatrix.h"

@@ -23,14 +23,14 @@ int JacobiSmoother::Solve(Eigen::VectorXd &b, Eigen::VectorXd &x)
 {
   int it = 0;
   if (_zeroStart) {
-    x = _w*(_idia.cwise()* b);
+    x = _w*_idia.cwiseProduct(b);
     it = 1;
    }
  for(; it<_step;it++) {
     _mat.Apply(x,r);
     // x = x + w*M^-1 *r;
     // x = x + w*M^-1 (b - A*x);
-    x += _w*(_idia.cwise() *(b-r));
+    x += _w*_idia.cwiseProduct(b-r);
   }
  return 1;
 }

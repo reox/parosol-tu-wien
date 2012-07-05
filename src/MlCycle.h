@@ -30,7 +30,7 @@
 
 #include "Testtools.h"
 
-#include <eigen2/Eigen/Core>
+#include <eigen3/Eigen/Core>
 
 //! A class to perform an MG-Cycle 
 

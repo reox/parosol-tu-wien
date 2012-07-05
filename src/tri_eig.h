@@ -5,7 +5,7 @@
 #ifndef TRI_EIG_H
 #define TRI_EIG_H
 
-#include <eigen2/Eigen/Core>
+#include <eigen3/Eigen/Core>
 
 //eigenvalues in diagonal
 static double Calculate_Shift(double d2, double d1, double off) 

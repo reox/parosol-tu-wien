@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+#include <iostream>
 
 #include "Chebyshev.h"
 #include "est_ev.h"
@@ -72,11 +72,11 @@ int Chebyshev::Solve(Eigen::VectorXd &b, Eigen::VectorXd &x)
   double invTheta = 1.0 / theta;
 
   if (_zeroStart) {
-    p = _idia.cwise()*b*invTheta;
+    p = _idia.cwiseProduct(b)*invTheta;
     x = p;
   } else {
     _mat.Apply(x,z);
-    p = _idia.cwise() *( b -z)*invTheta;
+    p = _idia.cwiseProduct( b -z)*invTheta;
     x = x + p;
   }
 
@@ -90,7 +90,7 @@ int Chebyshev::Solve(Eigen::VectorXd &b, Eigen::VectorXd &x)
     dtmp2 = 2.0 * rhokp1 * delta;
     rhok = rhokp1;
     p = dtmp1 * p;
-    p = p  + _idia.cwise() *  (b - z) * dtmp2;
+    p = p  + _idia.cwiseProduct(b - z) * dtmp2;
     x = x + p;
   }
 

@@ -81,7 +81,7 @@ example mesh.
 ParOSol has minimal dependencies on other libraries. This simplifies
 the installation process. To build ParOSol 
 [HDF5 library 1.8](http://www.hdfgroup.org/HDF5/) and [eigen
-v2](http://eigen.tuxfamily.org/index.php?title=Main_Page) has to be
+v3](http://eigen.tuxfamily.org/index.php?title=Main_Page) has to be
 installed. An MPI-compiler has to be used. OpenMPI and MPICH2 are
 supported.
 
@@ -107,7 +107,7 @@ variables:
 
 Eigen is a pure template library. This means the library consists of header
 files only. This can be easily included by the header path switch (-I
-for _GCC_ ). If eigen2 is installed set following variable:
+for _GCC_ ). If eigen3 is installed set following variable:
 
     CMAKE_CXX_FLAGS:STRING=-I/path/toeigen
 

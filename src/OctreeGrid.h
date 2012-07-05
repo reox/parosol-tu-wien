@@ -31,7 +31,7 @@
 #include <utility>
 #include <algorithm>
 
-#include <eigen2/Eigen/Core>
+#include <eigen3/Eigen/Core>
 
 #include "ImageReader.h"
 #include "BaseGrid.h"

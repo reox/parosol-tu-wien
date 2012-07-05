@@ -179,7 +179,7 @@ class GenericMatrix: public StiffnessMatrix
 			Dimension, NumIntegrationPoints,
 			SSMatrixSize, coord, tmpstiff); //TODO: not sure if this works
 	for( int i = 0; i < 24*24;i++)
-		(*_stiffnessmatrix)[i]=tmpstiff[i];
+		_stiffnessmatrix->data()[i]=tmpstiff[i];
 
 	delete[] coord;
 	delete[] tmpstiff;

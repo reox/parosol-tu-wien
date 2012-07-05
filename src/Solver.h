@@ -20,7 +20,7 @@
 #define SOLVER_H
 
 #include <string>
-#include <eigen2/Eigen/Core>
+#include <eigen3/Eigen/Core>
 
 
 //! An interface for solvers

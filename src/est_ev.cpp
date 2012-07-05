@@ -23,8 +23,7 @@
 #include "float.h"
 #include "tri_eig.h"
 
-#include <eigen2/Eigen/Core>
-#include <eigen2/Eigen/Array>
+#include <eigen3/Eigen/Core>
 #include "mpi.h"
 
 /// Compute the EV of a tridiagonal symmetric matrix

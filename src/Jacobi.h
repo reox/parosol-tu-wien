@@ -39,7 +39,7 @@ class Jacobi: public Solver
 
 		virtual int Solve(Eigen::VectorXd &b, Eigen::VectorXd &x)
 		{
-			x = (_idia.cwise() * b).lazy();  
+			x = _idia.cwiseProduct(b);  
 			return 0;
 		}
 		virtual const std::string  Label () const

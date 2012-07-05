@@ -19,7 +19,7 @@
 #include <iostream>
 
 #include <mpi.h>
-#include <eigen2/Eigen/Array>
+#include <eigen3/Eigen/Core>
 
 
 #include "Timing.h"
