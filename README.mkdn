@@ -6,7 +6,7 @@ ParOSol stands for PARallel Octree SOLver.
 
 It is a fully-parallel micro-FE analysis code based on Octree to solve
 linear elasticity problems. Because it works on equal sized voxel geometry,
-it solves the problem direct on 3d images, which can be obtained by CT-scans.
+it solves the problem direct on 3D images, which can be obtained by CT scans.
 
 ## Sourcecode ##
 
@@ -17,7 +17,7 @@ clone it with:
 
 ## Building ##
 
-To build ParOSol the [HDF5 library 1.8](http://www.hdfgroup.org/HDF5/) and [eigen v2](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+To build ParOSol the [HDF5 library 1.8](http://www.hdfgroup.org/HDF5/) and [eigen v3](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 is needed.
 
 Go to the build directory and edit the do_configure file.
@@ -33,7 +33,7 @@ Example:
 
 ## Documentation ##
 
-The documentation is located in the `doc/`. The sourcecode is documented with doxygen. It can be generated with:
+The documentation is located in `doc/`. The sourcecode is documented with doxygen. It can be generated with:
 
     make doc
 
