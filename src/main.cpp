@@ -37,7 +37,9 @@
 
 #include "VTKPrinter.h"
 #include "HDF5Printer.h"
-
+#include "HDF5ParfePrinter.h"
+#include "PfePrinter.h"
+ 
 #define EXIT(X) MPI_Finalize(); exit(X);
 
 //measure mflops with a matrix
@@ -182,13 +184,17 @@ template <class T>
 void print(GenericMatrix<T> &matr, Problem<T> &problem, std::string file, int MyPID) {
 	Timer timer(MPI_COMM_WORLD);
 	//VTKPrinter<OctreeKey_Lookup> print("out", matr.GetGrid());
-	HDF5Printer<OctreeKey_Lookup> print(file, matr.GetGrid());
+	//HDF5Printer<OctreeKey_Lookup> print(file, matr.GetGrid());
+	//HDF5ParfePrinter<OctreeKey_Lookup> print2(file, matr.GetGrid());
+	PfePrinter<OctreeKey_Lookup> print3(file, matr.GetGrid());
 	matr.PrintTimings();
 	timer.Start("Write");
     int dofs = matr.GetGrid().GetNrDofs();
     Eigen::VectorXd force(dofs);
     matr.Apply_NoResetBoundaries(problem.GetSol(), force);
-	print.PrintAll(problem.GetSol(), force, problem.GetRes());
+	//print.PrintAll(problem.GetSol(), force, problem.GetRes());
+	//print2.PrintAll(problem.GetSol(), force, problem.GetRes());
+	print3.PrintAll(problem.GetSol(), force, problem.GetRes());
 	timer.Stop("Write");
 	t_timing time = timer.ElapsedTime("Write");
 	PCOUT(MyPID, "Outputtime: " << COUTTIME(time) << "s\n");

@@ -41,7 +41,14 @@ class PostProcess
 		//! ElementByElementMatrix destructor
 		~PostProcess() { }
 
-		void ComputeStressAndStrain(Eigen::VectorXd &disp, Eigen::VectorXd &VonMises, Eigen::VectorXd &SED, Eigen::VectorXd &eff) {
+		void ComputeStressAndStrain(
+ 			Eigen::VectorXd &disp, 
+ 			Eigen::VectorXd &VonMises, 
+ 			Eigen::VectorXd &SED, 
+ 			Eigen::VectorXd &eff, 
+ 			Eigen::VectorXd &stresses, 
+ 			Eigen::VectorXd &strains) 
+ 		{
 			//fetch the nodes of the neighbours
 			_grid.Recv_import_Ghost(disp);
 			_grid.Send_import_Ghost(disp);
@@ -51,8 +58,8 @@ class PostProcess
 			int Dimension = 3;
 			const int NumMaterialProps = 2;
 			double _matprop[2];
-			_matprop[0] = 1000; //reference value Emodule is linear
-			_matprop[1] = 0.3;
+			//_matprop[0] = 1000; //reference value Emodule is linear
+			//_matprop[1] = 0.3;
 			int NumNodesPerElement = 8;
 			int NumDofsPerElement = 24;
 			int NumGaussPoints = 1;
@@ -68,6 +75,10 @@ class PostProcess
 			VonMises.setZero(nr_elem);
 			SED.setZero(nr_elem);
 			eff.setZero(nr_elem);
+			int NstressEntries = 7;
+			int NstrainEntries = 8;
+			stresses.setZero(nr_elem*NstressEntries);
+			strains.setZero(nr_elem*NstrainEntries);
 
 
 			//fetch the 24 values in pref and store store
@@ -78,12 +89,15 @@ class PostProcess
 			_grid.Wait_import_Ghost();
 			MPI_Barrier(MPI_COMM_WORLD);
 
+			_matprop[1] = _grid.poisons_ratio;
 			for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements()){
 
 				_grid.GetNodalDisplacementsOfElement(disp, xpref);
 
-				_matprop[0] = 1000*_grid.GetElementWeight();
-                double emoduli = 1000*_grid.GetElementWeight();
+				//_matprop[0] = 1000*_grid.GetElementWeight();
+                //double emoduli = 1000*_grid.GetElementWeight();
+                _matprop[0] = _grid.GetElementWeight();
+                double emoduli = _matprop[0];
 				Element_Stress(_matprop, NumMaterialProps,
 						NumNodesPerElement, NumDofsPerElement,
 	                    Dimension, NumGaussPoints, SSMatrixSize,
@@ -93,6 +107,13 @@ class PostProcess
 				VonMises[nr_ele] = stressbuf[6];
 				SED[nr_ele] = strainbuf[6];
                 eff[nr_ele] = sqrt(2*SED[nr_ele]/emoduli); 
+                for(int iii = 0; iii < 6; iii++)	{
+                	stresses[NstressEntries*nr_ele + iii] = stressbuf[iii];
+                	strains[NstrainEntries*nr_ele + iii] = strainbuf[iii];
+                }
+                stresses[NstressEntries*nr_ele + NstressEntries - 1] = VonMises[nr_ele];
+                strains[NstrainEntries*nr_ele + NstrainEntries - 2] = SED[nr_ele];
+                strains[NstrainEntries*nr_ele + NstrainEntries - 1] = eff[nr_ele];
 
 				nr_ele++;
 
