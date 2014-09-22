@@ -7,3 +7,7 @@ build/Doxyfile
 build/Makefile
 build/cmake_install.cmake
 build/parosol
+*~
+build/myParOSolMake.sh
+build/myParOSolRun.sh
+.hgignore

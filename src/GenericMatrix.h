@@ -161,8 +161,8 @@ class GenericMatrix: public StiffnessMatrix
 	int Dimension = 3;
 	const int NumMaterialProps = 2;
 	_matprop = new double[2];
-	_matprop[0] = 1000; //refernece value Emodule is linear
-	_matprop[1] = 0.3;
+	_matprop[0] = 1; //refernece value Emodule is linear
+	_matprop[1] = 0.39;
 	int NumNodesPerElement = 8;
 	int NumDofsPerElement = 24;
 	int NumIntegrationPoints = 8;
