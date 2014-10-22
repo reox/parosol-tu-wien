@@ -163,6 +163,7 @@ class GenericMatrix: public StiffnessMatrix
 	_matprop = new double[2];
 	_matprop[0] = 1; //refernece value Emodule is linear
 	_matprop[1] = 0.39;
+	//_matprop[1] = _grid.poisons_ratio;
 	int NumNodesPerElement = 8;
 	int NumDofsPerElement = 24;
 	int NumIntegrationPoints = 8;
@@ -183,7 +184,7 @@ class GenericMatrix: public StiffnessMatrix
 
 	delete[] coord;
 	delete[] tmpstiff;
-  	double nu = 0.3;
+  	//double nu = 0.3;
 	//if the optimized code is used, following factor has to be used. Else 1
 	//_factor = (1-nu)/((1+nu)*(1-2*nu))*1000/(144*(1-nu))*GridDim[0];
 	_factor = 1;

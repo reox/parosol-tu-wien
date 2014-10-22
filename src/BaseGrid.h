@@ -22,6 +22,7 @@
 #define BASEGRID_H
 
 #include <vector>
+#include <map>
 
 #include "ImageReader.h"
 #include "Config.h"
@@ -75,6 +76,10 @@ public:
   
   //!Global Poison's ratio for the mesh
   double poisons_ratio;
+
+  std::map< short, float > EmodMap;
+  std::map< short, float > NuMap;
+  std::map< float, short > invEmodMap;
 
   //! Index of the fix nodes. A node has 4 values (x,y,z,d) (d: direction)
   std::vector<unsigned short> fixed_nodes_coordinates;

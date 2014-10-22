@@ -186,6 +186,28 @@ int HDF5Image::Scan(BaseGrid* grid)
     }
     reader.Read("Poisons_ratio", grid->poisons_ratio);
 
+   if (!reader.Select("/Parameters")) {
+      PCOUT(MyPID, "Error Selecting Parameters!!!\n")
+      MPI_Finalize();
+      exit(-1);
+   }
+   int nMat;
+   reader.Read("NMat", H5T_STD_I32LE, &nMat);
+   int *matArray = new int[nMat];
+   double *EModArray = new double[nMat];
+   double *NuArray = new double[nMat];
+   reader.Read("grayLevels", H5T_STD_I32LE, matArray);
+   reader.Read("EMod", H5T_IEEE_F64LE, EModArray);
+   reader.Read("Nu", H5T_IEEE_F64LE, NuArray);
+   for(int kk = 0; kk < nMat; kk++) {
+     grid->EmodMap[matArray[kk]] = EModArray[kk];
+     grid->NuMap[matArray[kk]] = NuArray[kk];
+     grid->invEmodMap[EModArray[kk]] = matArray[kk];
+   }
+   delete []matArray;
+   delete []EModArray;
+   delete []NuArray;
+
    PCOUT(MyPID, "\nHDF5 ImageReader: \n")
    PCOUT(MyPID, "  global Dimension: " << grid->gdim[0] << " " << grid->gdim[1] << " " << grid->gdim[2] << "\n")
    PCOUT(MyPID, "  local Dimension: " << grid->ldim[0] << " " << grid->ldim[1] << " " << grid->ldim[2] << " Resolution: " << grid->res[0] << "\n")
@@ -196,5 +218,6 @@ int HDF5Image::Scan(BaseGrid* grid)
    num_loc_bc[1]=grid->loaded_nodes_values.size();
    MPI_Reduce(&num_loc_bc, &num_gl_bc, 2, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD );
    PCOUT(MyPID, "  BC: Fixednodesize: " << num_gl_bc[0] << " loadednodesize " << num_gl_bc[1] << "\n")
-      return 0;
+
+   return 0;
   }

@@ -89,8 +89,8 @@ class HDF5ParfePrinter {
 		   Writer->Write("nr_material_properties", (int) 2);
 		   Writer->Write("nr_material_types", (int)1);
 
-		    double mat_props[2] = {1000,0.3};
-		    Writer->Write("materials", mat_props, 1, 1, 2, 0);
+		    //double mat_props[2] = {1000,0.3};
+		    //Writer->Write("materials", mat_props, 1, 1, 2, 0);
 		    Writer->Write("iteration_limit", (int)2000);
 		    Writer->Write("tolerance", (double) 1e-5);
 		    

@@ -68,82 +68,64 @@ class PfePrinter {
 			PrintElems("Elements");
 			PrintMaterialIDs("MaterialIDs");
 			PrintBC();
-			PrintParameters();
 		}
 		
-		//!Prints the Parameter that is needed by ParFe
-		void PrintParameters() {
-		  int n_elements = _grid.GetNrElemGlobal();
-		  int n_nodes = _grid.GetNrNodesGlobal();
-		    Writer->Select("/Parameters");
-		    Writer->Write("element_type", "'hexahedron'");
-		    Writer->Write("#elements", n_elements);
-		    Writer->Write("#nodes", n_nodes);
-		    Writer->Write("#integration_points", (int)8);
-		    Writer->Write("#dofs_per_node", (int)3);
-		    Writer->Write("#nodes_per_element", (int)8);
-		    Writer->Write("size_of_stress_strain_matrix", (int) 6);
-		    Writer->Write("#dimensions", (int)3);
-		    Writer->Write("aa", (double)0.2);
-		    Writer->Write("bb", (double)0.2);
-		    Writer->Write("cc", (double)0.2);
-		    Writer->Write("#material_properties", (int) 2);
-		    Writer->Write("#material_types", (int)1);
-
-		    //TODO: Needed for postprocessing?
-		    //double mat_props[2] = {1;0;0;0,0.3};
-		    //Writer->Write("materials", mat_props, 1, 1, 2, 0);
-		    Writer->Write("iteration_limit", (int)2000);
-		    Writer->Write("tolerance", (double) 1e-5);
-		    
-		}
-
 		//! Print all Boundary Conditions in to the fixed node Data Set.
 		void PrintBC() {
 		  Writer->Select("/Boundary conditions");
 		  int my_n_fixed_nodes = _grid.bc.FixedNodes_Ind.size();
 		  int n_fixed_nodes;
 		  MPI_Allreduce(&my_n_fixed_nodes, &n_fixed_nodes, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-		  int *sense = new int[my_n_fixed_nodes];
-		  double *value = new double[my_n_fixed_nodes];
-		  int *node_numbers = new int[my_n_fixed_nodes];
+		  int *sense_fixed = new int[my_n_fixed_nodes];
+		  double *value_fixed = new double[my_n_fixed_nodes];
+		  int *node_numbers_fixed = new int[my_n_fixed_nodes];
+		  int myNFixedNodes = 0;
+		  double bc_val, abs_bc_val;
 		  
 		  t_octree_key offset = _grid.GetNodeOffset();
 		  for(int i =0;i<my_n_fixed_nodes;i++) {
-		    node_numbers[i] = _grid.bc.FixedNodes_Ind[i]/3 +offset+1;
-		    sense[i] = _grid.bc.FixedNodes_Ind[i]%3+1;
-		    value[i] = _grid.bc.FixedNodes[i];
+		  	bc_val = _grid.bc.FixedNodes[i];
+		  	abs_bc_val = fabs(bc_val);
+		  	if (abs_bc_val > 1e-14)	{
+		  		node_numbers_fixed[myNFixedNodes] = _grid.bc.FixedNodes_Ind[i]/3 +offset+1;
+		    	sense_fixed[myNFixedNodes] = _grid.bc.FixedNodes_Ind[i]%3+1;
+		    	value_fixed[myNFixedNodes] = bc_val;
+		    	myNFixedNodes++;
+		  	}
 		    // TODO: needed?
 		    /*
 		    if (value[i] == 0)
 		      value[i] = 1e-16;
 		    */
 		  }
-		  
-		  int my_fixed_nodes_offset;
-		  MPI_Scan(&my_n_fixed_nodes, &my_fixed_nodes_offset,1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-		  my_fixed_nodes_offset -= my_n_fixed_nodes; //include it selfs
-		  Writer->Write("Fixed nodes size", (int)n_fixed_nodes);
-		  Writer->Write("Fixed nodes", "Node number", node_numbers,"Sense", sense, "Value", value, n_fixed_nodes, my_n_fixed_nodes, 1,1,1, my_fixed_nodes_offset );
+
+		  int my_fixed_nodes_offset, N_actual_fixed_nodes;
+		  MPI_Scan(&myNFixedNodes, &my_fixed_nodes_offset,1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+		  MPI_Allreduce(&myNFixedNodes, &N_actual_fixed_nodes, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+		  my_fixed_nodes_offset -= myNFixedNodes; //include it selfs
+
+		  Writer->Write("Fixed nodes size", (int)N_actual_fixed_nodes);
+		  if(N_actual_fixed_nodes > 0)	{
+		  	  Writer->Write("Fixed nodes", "Node number", node_numbers_fixed,"Sense", sense_fixed, "Value", value_fixed, N_actual_fixed_nodes, myNFixedNodes, 1,1,1, my_fixed_nodes_offset );
+		  }
 		  Writer->Write("Loaded nodes size", (int)0);
 		  Writer->Write("Restrained nodes size", (int)0);
-		  delete[] sense;
-		  delete[] value;
-		  delete[] node_numbers;
+
+		  delete[] sense_fixed;
+		  delete[] value_fixed;
+		  delete[] node_numbers_fixed;
 		}
 
 		void PrintMaterialIDs(std::string dset) {
 		    Writer->Select("/Mesh");
-            Eigen::VectorXf emoduli(_grid.GetNrElem());
+            Eigen::VectorXi MatIDs(_grid.GetNrElem());
 			t_index i =0;
 			for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements())	{
-				// TODO: Scaling?
-				emoduli[i]=_grid.GetElementWeight(); 
-				//emoduli[i]=_grid.GetElementWeight()*1;0;0;0; 
+				MatIDs[i]=_grid.invEmodMap[_grid.GetElementWeight()];
 				i++;
 			}
             MPI_Barrier(MPI_COMM_WORLD);
-            Writer->Write("Material IDs", emoduli.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 1, _grid.GetElemOffset());
+            Writer->Write("Material IDs", MatIDs.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 1, _grid.GetElemOffset());
 		}
 		
 		  

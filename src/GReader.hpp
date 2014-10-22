@@ -1144,7 +1144,7 @@ class HDF5_GReader
   */
   int Skip(char);
  
-private:
+
 
   hid_t getNativeType(int, hsize_t=1);
   hid_t getNativeType(double, hsize_t=1);
@@ -1154,6 +1154,8 @@ private:
   int Read(const std::string& name, hid_t type, void* data, long num_global_elems, long num_my_elems, long elem_size, long my_offset);
   int Read(const std::string& name, hid_t type, void* data);
   int Read(const std::string& name, hid_t type, void* data, hsize_t* my_offset, hsize_t *count, const int dims);
+  
+private:
 
   void copy(void* dest, const void* src, long nblocks, long block_size, long stride);
   std::string filename;
