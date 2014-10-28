@@ -13,7 +13,7 @@ suit the postprocessing tools used at ILSB TU Wien.
 
 ## Sourcecode ##
 
-The sourcecode is obtained by cloning it with clone it with:
+The sourcecode is obtained by cloning it with:
 
     hg clone https://Elankumaran@bitbucket.org/Elankumaran/parosol-tu-wien
 
