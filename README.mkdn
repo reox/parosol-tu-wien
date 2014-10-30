@@ -1,4 +1,4 @@
-# ParOSol 
+# ParOSol TU Wien
 
 ## Introduction ##
 
@@ -8,28 +8,18 @@ It is a fully-parallel micro-FE analysis code based on Octree to solve
 linear elasticity problems. Because it works on equal sized voxel geometry,
 it solves the problem direct on 3D images, which can be obtained by CT scans.
 
+ParOSol TU Wien is a fork of ParOSol, where changes have been made to
+suit the postprocessing tools used at ILSB TU Wien.
+
 ## Sourcecode ##
 
-The sourcecode is available at https://bitbucket.org/cflaig/parosol/overview or
-clone it with:
+The sourcecode is obtained by cloning it with:
 
-    hg clone https://bitbucket.org/cflaig/parosol
+    hg clone https://Elankumaran@bitbucket.org/Elankumaran/parosol-tu-wien
 
 ## Building ##
 
-To build ParOSol the [HDF5 library 1.8](http://www.hdfgroup.org/HDF5/) and [eigen v3](http://eigen.tuxfamily.org/index.php?title=Main_Page)
-is needed.
-
-Go to the build directory and edit the do_configure file.
-
-Example:
-
-    cmake \
-        -D CMAKE_CXX_COMPILER:FILEPATH=mpic++ \
-        -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
-        -D HDF5_LIBRARIES:PATH=/path/to/hdf5/lib/libhdf5.so\
-        -D HDF5_INCLUDE_DIRS:PATH=/path/to/hdf5/include \
-        ../src
+See ParOSol build directions. Refer to the do_configure file in the build directory.
 
 ## Documentation ##
 
@@ -40,4 +30,4 @@ The documentation is located in `doc/`. The sourcecode is documented with doxyge
 
 ## Licence ##
 
-The code is licenced under GPLv2
+Refer to ParOSol licensing.
