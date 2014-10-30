@@ -8,8 +8,15 @@ It is a fully-parallel micro-FE analysis code based on Octree to solve
 linear elasticity problems. Because it works on equal sized voxel geometry,
 it solves the problem direct on 3D images, which can be obtained by CT scans.
 
-ParOSol TU Wien is a fork of ParOSol, where changes have been made to
-suit the postprocessing tools used at ILSB TU Wien.
+ParOSol TU Wien is a fork of ParOSol. The following changes have been made:
+
+1. The code now works with a consistent system of units (m and Pa or mm and MPa).
+2. The Poisson ratio that is read from the input HDF5 data is used, not the hard coded one.
+3. The ParOSol output is formatted like ParFE output (but only to the level needed by the postprocessing
+tools used at ILSB TU Wien.)
+
+The changes in code have been tested well at the ILSB TU Wien, but are still provided without warranty
+of any kind. Use at your own discretion.
 
 ## Sourcecode ##
 
