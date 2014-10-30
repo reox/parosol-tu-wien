@@ -185,6 +185,8 @@ int HDF5Image::Scan(BaseGrid* grid)
       grid->res[i] = res;
     }
     reader.Read("Poisons_ratio", grid->poisons_ratio);
+    extern double global_poisson_ratio;
+    global_poisson_ratio = grid->poisons_ratio;
 
    if (!reader.Select("/Parameters")) {
       PCOUT(MyPID, "Error Selecting Parameters!!!\n")

@@ -49,6 +49,8 @@ void mflops(GenericMatrix<T> &matr, int MyPID);
 template <class T>
 void print(GenericMatrix<T> &matr, Problem<T> &problem, std::string file, int MyPID);
 
+double global_poisson_ratio;
+
 int main( int argc, char* argv[])
 {
 	MPI_Init(&argc, &argv);

@@ -162,7 +162,9 @@ class GenericMatrix: public StiffnessMatrix
 	const int NumMaterialProps = 2;
 	_matprop = new double[2];
 	_matprop[0] = 1; //refernece value Emodule is linear
-	_matprop[1] = 0.39;
+	extern double global_poisson_ratio;
+	_matprop[1] = global_poisson_ratio;
+	//_matprop[1] = 0.39;
 	//_matprop[1] = _grid.poisons_ratio;
 	int NumNodesPerElement = 8;
 	int NumDofsPerElement = 24;
