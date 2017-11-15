@@ -1,3 +1,3 @@
-install (PROGRAMS createxmf.py DESTINATION bin)
+install (PROGRAMS createxmf.py DESTINATION bin RENAME createxmf)
 
 # TODO we could also build all other files here...
