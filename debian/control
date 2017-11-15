@@ -2,7 +2,7 @@ Source: parosol
 Section: science
 Priority: optional
 Maintainer: Sebastian Bachmann <sebastian.bachmann@tuwien.ac.at>
-Build-Depends: cmake, libopenmpi-dev, libeigen3-dev, libhdf5-dev
+Build-Depends: cmake, libopenmpi-dev, libeigen3-dev, libhdf5-dev, pandoc
 
 Package: parosol
 Architecture: any
