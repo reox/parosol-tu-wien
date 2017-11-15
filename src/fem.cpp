@@ -188,16 +188,16 @@ int  inline matmulAB(const double *A, int Ar, int Ac, const double *B, int Br, i
 //         cout << "*********************ERROR DIMENSION OF THE MATRIX NOT OKEY**************** \n";
 //         return (-1);
 //     }
-    
-    for(i=0; i<Ar; i++)
+    for(i=0; i<Ar; i++) {
         for(j=0; j<Bc; j++) {
-        sum=0;
-        for(k=0; k<Br; k++)
-            sum += A[ACCESS(i,k,Ar,Ac)]*B[ACCESS(k,j,Br,Bc)];
-        C[ACCESS(i,j,Cr,Cc)] = sum;
+            sum=0;
+            for(k=0; k<Br; k++) {
+                sum += A[ACCESS(i,k,Ar,Ac)]*B[ACCESS(k,j,Br,Bc)];
+            }
+            C[ACCESS(i,j,Cr,Cc)] = sum;
         }
-    
-        return (0);
+    }
+    return (0);
 }
 
 //matmult with the second matrix transposed
@@ -208,16 +208,16 @@ int  inline matmulABt(const double *A, int Ar, int Ac, const double *B, int Br, 
 //         cout << "*********************ERROR DIMENSION OF THE MATRIX NOT OKEY**************** \n";
 //         return (-1);
 //     }
-    
-    for(i=0; i<Ar; i++)
+    for(i=0; i<Ar; i++) {
         for(j=0; j<Br; j++) {
-        sum=0;
-        for(k=0; k<Bc; k++)
-            sum += A[ACCESS(i,k,Ar,Ac)]*B[ACCESS(j,k,Br,Bc)];
-        C[ACCESS(i,j,Cr,Cc)] = sum;
+            sum=0;
+            for(k=0; k<Bc; k++) {
+                sum += A[ACCESS(i,k,Ar,Ac)]*B[ACCESS(j,k,Br,Bc)];
+            }
+            C[ACCESS(i,j,Cr,Cc)] = sum;
         }
-    
-        return (0);
+    }
+    return (0);
 }
 
 int  inline matmulAtB(const double *A, int Ar, int Ac, const double *B, int Br, int Bc, double *C, int Cr, int Cc){
@@ -227,16 +227,16 @@ int  inline matmulAtB(const double *A, int Ar, int Ac, const double *B, int Br, 
 //         cout << "*********************ERROR DIMENSION OF THE MATRIX NOT OKEY**************** \n";
 //         return (-1);
 //     }
-    
-    for(i=0; i<Ac; i++)
+    for(i=0; i<Ac; i++) {
         for(j=0; j<Bc; j++) {
-        sum=0;
-        for(k=0; k<Br; k++)
-            sum += A[ACCESS(k,i,Ar,Ac)]*B[ACCESS(k,j,Br,Bc)];
-        C[ACCESS(i,j,Cr,Cc)] = sum;
+            sum=0;
+            for(k=0; k<Br; k++) {
+                sum += A[ACCESS(k,i,Ar,Ac)]*B[ACCESS(k,j,Br,Bc)];
+            }
+            C[ACCESS(i,j,Cr,Cc)] = sum;
         }
-    
-        return (0);
+    }
+    return (0);
 }
 
 void inline d_mat(double *d ,double e, double v, int nst){
