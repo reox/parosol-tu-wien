@@ -1,0 +1,8 @@
+build/CMakeCache.txt
+build/CMakeDoxyfile.in
+build/CMakeDoxygenDefaults.cmake
+build/CMakeFiles/
+build/Doxyfile
+build/Makefile
+build/cmake_install.cmake
+build/parosol
