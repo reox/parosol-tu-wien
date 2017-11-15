@@ -6,3 +6,12 @@ build/Doxyfile
 build/Makefile
 build/cmake_install.cmake
 build/parosol
+
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/install
+debian/parosol.substvars
+debian/parosol/
+obj-x86_64-linux-gnu/
+
