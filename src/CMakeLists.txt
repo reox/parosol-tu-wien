@@ -26,3 +26,5 @@ ELSE (DOXYGEN_FOUND)
 ENDIF (DOXYGEN_FOUND)
 
 target_link_libraries(parosol ${LIBS})
+
+install(TARGETS parosol DESTINATION bin)

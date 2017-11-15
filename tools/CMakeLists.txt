@@ -1,0 +1,3 @@
+install (PROGRAMS createxmf.py DESTINATION bin)
+
+# TODO we could also build all other files here...
