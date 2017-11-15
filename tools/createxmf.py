@@ -25,17 +25,21 @@
 
 import h5py
 import sys
+import os
 
-if  len(sys.argv) != 2:
+if len(sys.argv) != 2:
   print("usage: "+sys.argv[0]+" filename")
   sys.exit(0)
 
-filename = sys.argv[1]
+filepath = sys.argv[1]
 try:
-  f = h5py.File(filename,'r+')
+  f = h5py.File(filepath,'r+')
 except:
-  print("usgage: "+sys.argv[0]+" filename")
+  print("usage: "+sys.argv[0]+" filename")
   sys.exit(2)
+
+# Split the name, so we have the correct path in the xmf file
+filename = os.path.basename(filepath)
 
 #get numbers
 (nr_nodes,tmp) = f['Mesh']['Coordinates'].shape
@@ -101,7 +105,7 @@ sEnd =   "   </Grid>\n" \
          " </Domain>\n" \
          "</Xdmf>\n" 
 #write file
-outfilename = filename.replace(".h5",".xmf")
+outfilename = filepath.replace(".h5",".xmf")
 outfile = open(outfilename, 'w')
 outfile.write("%s%s%s%s%s%s%s%s%s" % (sStart, sMesh, sDisp, sForce, sSED, sVM, sEFF,  sEmoduli, sEnd))
 outfile.close()
