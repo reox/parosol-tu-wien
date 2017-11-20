@@ -38,3 +38,12 @@ The documentation is located in `doc/`. The sourcecode is documented with doxyge
 ## Licence ##
 
 Refer to ParOSol licensing.
+
+## Bugs ? ##
+
+* When compiling on debian, I noted the following weird behaviour:
+  After the writing `Time for Reading BC: avg: 5e-07 min: 0 max: 1e-06s`
+  all CPUs go to 100% but nothing happens.
+  This behaviour is only in combination with mpirun -n X
+* ParOSol numbers the element in the Mesh starting from 1. But XMF requires
+starting from 0...
