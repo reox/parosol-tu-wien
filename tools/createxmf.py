@@ -89,27 +89,23 @@ sVM =    "     <Attribute Name=\"S_vonMises\" AttributeType=\"Scalar\" Center=\"
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
-sEFF =    "     <Attribute Name=\"EFF\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "           "+filename+":/Solution/EFF\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
-
-eleStrain =    "     <Attribute Name=\"EFF\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
+# FIXME size is nr_elements 8
+eleStrain =    "     <Attribute Name=\"eleStrain\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
          "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Solution/Element strain\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
-eleStress =    "     <Attribute Name=\"EFF\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
+# FIXME size is nr_elements 7
+eleStress =    "     <Attribute Name=\"eleStress\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
          "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Solution/Element stress\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
-sEmoduli="     <Attribute Name=\"Emoduli\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "           "+filename+":/Mesh/Emoduli\n" \
+sMaterial ="     <Attribute Name=\"MaterialID\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Int\" Precision=\"4\" >\n" \
+         "           "+filename+":/Mesh/Material IDs\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
@@ -125,9 +121,8 @@ outfile.write("\n".join([sStart,
                          sForce,
                          sSED,
                          sVM,
-                         sEFF,
-                         eleStrain,
-                         eleStress,
-                         sEmoduli,
+                         #eleStrain,
+                         #eleStress,
+                         sMaterial,
                          sEnd]))
 outfile.close()
