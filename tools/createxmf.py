@@ -55,7 +55,7 @@ sStart = "<?xml version=\"1.0\" ?>\n" \
          "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n" 
 
 sMesh =  "     <Topology TopologyType=\"Hexahedron\" NumberOfElements=\""+repr(nr_elements)+"\" BaseOffset=\"0\" >\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 8\" NumberType=\"Int\" Precisioni=\"8\" Format=\"HDF\">\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 8\" NumberType=\"Int\" Precision=\"8\" Format=\"HDF\">\n" \
          "         "+filename+":/Mesh/Elements\n" \
          "       </DataItem>\n" \
          "     </Topology>\n" \
@@ -67,13 +67,13 @@ sMesh =  "     <Topology TopologyType=\"Hexahedron\" NumberOfElements=\""+repr(n
 
 sDisp =  "     <Attribute Name=\"Displacement\" AttributeType=\"Vector\" Center=\"Node\">\n" \
          "       <DataItem Dimensions=\""+repr(nr_nodes)+" 3\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "         "+filename+":/Solution/disp\n" \
+         "         "+filename+":/Solution/Nodal displacements\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
 sForce=  "     <Attribute Name=\"Force\" AttributeType=\"Vector\" Center=\"Node\">\n" \
          "       <DataItem Dimensions=\""+repr(nr_nodes)+" 3\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "         "+filename+":/Solution/force\n" \
+         "         "+filename+":/Solution/Nodal forces\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
@@ -95,6 +95,18 @@ sEFF =    "     <Attribute Name=\"EFF\" AttributeType=\"Scalar\" Center=\"Cell\"
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
+eleStrain =    "     <Attribute Name=\"EFF\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
+         "           "+filename+":/Solution/Element strain\n" \
+         "       </DataItem>\n" \
+         "     </Attribute>\n"
+
+eleStress =    "     <Attribute Name=\"EFF\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
+         "           "+filename+":/Solution/Element stress\n" \
+         "       </DataItem>\n" \
+         "     </Attribute>\n"
+
 sEmoduli="     <Attribute Name=\"Emoduli\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
          "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Mesh/Emoduli\n" \
@@ -107,5 +119,15 @@ sEnd =   "   </Grid>\n" \
 #write file
 outfilename = filepath.replace(".h5",".xmf")
 outfile = open(outfilename, 'w')
-outfile.write("%s%s%s%s%s%s%s%s%s" % (sStart, sMesh, sDisp, sForce, sSED, sVM, sEFF,  sEmoduli, sEnd))
+outfile.write("\n".join([sStart,
+                         sMesh,
+                         sDisp,
+                         sForce,
+                         sSED,
+                         sVM,
+                         sEFF,
+                         eleStrain,
+                         eleStress,
+                         sEmoduli,
+                         sEnd]))
 outfile.close()
