@@ -5,8 +5,8 @@
 
 override_dh_auto_configure:
 	dh_auto_configure -- \
-    -DCMAKE_CXX_COMPILER:FILEPATH=mpic++ \
-    -DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
-    -DHDF5_LIBRARIES:PATH=/usr/lib/x86_64-linux-gnu/hdf5/openmpi/libhdf5.so \
-    -DHDF5_INCLUDE_DIRS:PATH=/usr/include/hdf5/openmpi \
+	-DCMAKE_CXX_COMPILER:FILEPATH=mpic++ \
+	-DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo \
+	-DHDF5_LIBRARIES:PATH=/usr/lib/x86_64-linux-gnu/hdf5/openmpi/libhdf5.so \
+	-DHDF5_INCLUDE_DIRS:PATH=/usr/include/hdf5/openmpi \
 	-DENABLE_DOC=yes
