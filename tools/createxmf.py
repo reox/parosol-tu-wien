@@ -54,7 +54,7 @@ sStart = "<?xml version=\"1.0\" ?>\n" \
          " <Domain>\n" \
          "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n" 
 
-sMesh =  "     <Topology TopologyType=\"Hexahedron\" NumberOfElements=\""+repr(nr_elements)+"\" BaseOffset=\"0\" >\n" \
+sMesh =  "     <Topology TopologyType=\"Hexahedron\" NumberOfElements=\""+repr(nr_elements)+"\" BaseOffset=\"1\" >\n" \
          "       <DataItem Dimensions=\""+repr(nr_elements)+" 8\" NumberType=\"Int\" Precision=\"8\" Format=\"HDF\">\n" \
          "         "+filename+":/Mesh/Elements\n" \
          "       </DataItem>\n" \
