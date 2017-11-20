@@ -18,12 +18,6 @@ tools used at ILSB TU Wien.)
 The changes in code have been tested well at the ILSB TU Wien, but are still provided without warranty
 of any kind. Use at your own discretion.
 
-## Sourcecode ##
-
-The sourcecode is obtained by cloning it with:
-
-    hg clone https://Elankumaran@bitbucket.org/Elankumaran/parosol-tu-wien
-
 ## Building ##
 
 See ParOSol build directions. Refer to the do_configure file in the build directory.
@@ -38,10 +32,3 @@ The documentation is located in `doc/`. The sourcecode is documented with doxyge
 ## Licence ##
 
 Refer to ParOSol licensing.
-
-## Bugs ? ##
-
-* When compiling on debian, I noted the following weird behaviour:
-  After the writing `Time for Reading BC: avg: 5e-07 min: 0 max: 1e-06s`
-  all CPUs go to 100% but nothing happens.
-  This behaviour is only in combination with mpirun -n X
