@@ -2,12 +2,12 @@ Source: parosol
 Section: science
 Priority: optional
 Maintainer: Sebastian Bachmann <sebastian.bachmann@tuwien.ac.at>
-Build-Depends: cmake, libopenmpi-dev, libeigen3-dev, libhdf5-openmpi-dev, pandoc
+Build-Depends: debhelper (>= 9), cmake, libopenmpi-dev, libeigen3-dev, libhdf5-serial-dev, pandoc
 
 Package: parosol
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, openmpi-bin
-Recommends: hdf5-tools, paraview, hdfview
+Recommends: hdf5-tools, paraview, hdfview | hdf-compass
 Description: ParOSol is a fully-parallel micro-FE analysis solver.
  ParOSol is a fully-parallel micro-FE analysis code based on octrees to solve
  linear elasticity problems. ParOSol solves the problem directly on 3D images,
