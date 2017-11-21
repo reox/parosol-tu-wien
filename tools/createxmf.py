@@ -17,11 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-
-
-#create the xmf file to the output of ParOsol. The xml file
-#is needed by paraview
+# create the xmf file to the output of ParOsol. The xml file
+# is needed by paraview
 
 import h5py
 import sys
@@ -42,8 +39,8 @@ except:
 filename = os.path.basename(filepath)
 
 #get numbers
-(nr_nodes,tmp) = f['Mesh']['Coordinates'].shape
-(nr_elements,tmp) = f['Mesh']['Elements'].shape
+nr_nodes, _ = f['Mesh']['Coordinates'].shape
+nr_elements, _ = f['Mesh']['Elements'].shape
 
 print("nodes: "+str(nr_nodes)+" elements: "+str(nr_elements))
 
@@ -91,14 +88,14 @@ sVM =    "     <Attribute Name=\"S_vonMises\" AttributeType=\"Scalar\" Center=\"
 
 # FIXME size is nr_elements 8
 eleStrain =    "     <Attribute Name=\"eleStrain\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 8\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Solution/Element strain\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
 # FIXME size is nr_elements 7
 eleStress =    "     <Attribute Name=\"eleStress\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 7\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Solution/Element stress\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
@@ -114,15 +111,14 @@ sEnd =   "   </Grid>\n" \
          "</Xdmf>\n" 
 #write file
 outfilename = filepath.replace(".h5",".xmf")
-outfile = open(outfilename, 'w')
-outfile.write("\n".join([sStart,
-                         sMesh,
-                         sDisp,
-                         sForce,
-                         sSED,
-                         sVM,
-                         #eleStrain,
-                         #eleStress,
-                         sMaterial,
-                         sEnd]))
-outfile.close()
+with open(outfilename, 'w') as outfile:
+    outfile.write("\n".join([sStart,
+                             sMesh,
+                             sDisp,
+                             sForce,
+                             sSED,
+                             sVM,
+                             #eleStrain,
+                             #eleStress,
+                             sMaterial,
+                             sEnd]))

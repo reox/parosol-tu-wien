@@ -33,97 +33,97 @@
 template <class Grid>
 class PostProcess 
 {
-	public:
-		PostProcess(Grid &grid) :_grid(grid)
-	{
-	}
+    public:
+        PostProcess(Grid &grid) :_grid(grid)
+    {
+    }
 
-		//! ElementByElementMatrix destructor
-		~PostProcess() { }
+        //! ElementByElementMatrix destructor
+        ~PostProcess() { }
 
-		void ComputeStressAndStrain(
- 			Eigen::VectorXd &disp, 
- 			Eigen::VectorXd &VonMises, 
- 			Eigen::VectorXd &SED, 
- 			Eigen::VectorXd &eff, 
- 			Eigen::VectorXd &stresses, 
- 			Eigen::VectorXd &strains) 
- 		{
-			//fetch the nodes of the neighbours
-			_grid.Recv_import_Ghost(disp);
-			_grid.Send_import_Ghost(disp);
+        void ComputeStressAndStrain(
+                Eigen::VectorXd &disp,
+                Eigen::VectorXd &VonMises,
+                Eigen::VectorXd &SED,
+                Eigen::VectorXd &eff,
+                Eigen::VectorXd &stresses,
+                Eigen::VectorXd &strains)
+        {
+            //fetch the nodes of the neighbours
+            _grid.Recv_import_Ghost(disp);
+            _grid.Send_import_Ghost(disp);
 
             // Set the reference element up
-			double GridDim[3];
-			int Dimension = 3;
-			const int NumMaterialProps = 2;
-			double _matprop[2];
-			//_matprop[0] = 1000; //reference value Emodule is linear
-			//_matprop[1] = 0.3;
-			int NumNodesPerElement = 8;
-			int NumDofsPerElement = 24;
-			int NumGaussPoints = 1;
-			int SSMatrixSize = 6;
-			double *coord = new double[Dimension * NumNodesPerElement];
-			_grid.GetRes(GridDim);
-			setcoord(GridDim,coord);
+            double GridDim[3];
+            int Dimension = 3;
+            const int NumMaterialProps = 2;
+            double _matprop[2];
+            //_matprop[0] = 1000; //reference value Emodule is linear
+            //_matprop[1] = 0.3;
+            int NumNodesPerElement = 8;
+            int NumDofsPerElement = 24;
+            int NumGaussPoints = 1;
+            int SSMatrixSize = 6;
+            double *coord = new double[Dimension * NumNodesPerElement];
+            _grid.GetRes(GridDim);
+            setcoord(GridDim,coord);
 
-			double* strainbuf = new double[(SSMatrixSize +1) * NumGaussPoints ];
-			double* stressbuf = new double[(SSMatrixSize +1) * NumGaussPoints ];
-			double sigma, theta;
-			t_index nr_elem =_grid.GetNrElem();
-			VonMises.setZero(nr_elem);
-			SED.setZero(nr_elem);
-			eff.setZero(nr_elem);
-			int NstressEntries = 7;
-			int NstrainEntries = 8;
-			stresses.setZero(nr_elem*NstressEntries);
-			strains.setZero(nr_elem*NstrainEntries);
+            double* strainbuf = new double[(SSMatrixSize +1) * NumGaussPoints ];
+            double* stressbuf = new double[(SSMatrixSize +1) * NumGaussPoints ];
+            double sigma, theta;
+            t_index nr_elem =_grid.GetNrElem();
+            VonMises.setZero(nr_elem);
+            SED.setZero(nr_elem);
+            eff.setZero(nr_elem);
+            int NstressEntries = 7;
+            int NstrainEntries = 8;
+            stresses.setZero(nr_elem*NstressEntries);
+            strains.setZero(nr_elem*NstrainEntries);
 
 
-			//fetch the 24 values in pref and store store
-			// res = K_e * xpref
+            //fetch the 24 values in pref and store store
+            // res = K_e * xpref
             Eigen::Matrix<double,24,1> xpref;
-			int nr_ele = 0;
+            int nr_ele = 0;
 
-			_grid.Wait_import_Ghost();
-			MPI_Barrier(MPI_COMM_WORLD);
+            _grid.Wait_import_Ghost();
+            MPI_Barrier(MPI_COMM_WORLD);
 
-			_matprop[1] = _grid.poisons_ratio;
-			for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements()){
+            _matprop[1] = _grid.poisons_ratio;
+            for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements()){
 
-				_grid.GetNodalDisplacementsOfElement(disp, xpref);
+                _grid.GetNodalDisplacementsOfElement(disp, xpref);
 
-				//_matprop[0] = 1000*_grid.GetElementWeight();
+                //_matprop[0] = 1000*_grid.GetElementWeight();
                 //double emoduli = 1000*_grid.GetElementWeight();
                 _matprop[0] = _grid.GetElementWeight();
                 double emoduli = _matprop[0];
-				Element_Stress(_matprop, NumMaterialProps,
-						NumNodesPerElement, NumDofsPerElement,
-	                    Dimension, NumGaussPoints, SSMatrixSize,
-						coord, &xpref[0], 
-						strainbuf, stressbuf, 
-						&sigma, &theta);
-				VonMises[nr_ele] = stressbuf[6];
-				SED[nr_ele] = strainbuf[6];
+                Element_Stress(_matprop, NumMaterialProps,
+                        NumNodesPerElement, NumDofsPerElement,
+                        Dimension, NumGaussPoints, SSMatrixSize,
+                        coord, &xpref[0], 
+                        strainbuf, stressbuf, 
+                        &sigma, &theta);
+                VonMises[nr_ele] = stressbuf[6];
+                SED[nr_ele] = strainbuf[6];
                 eff[nr_ele] = sqrt(2*SED[nr_ele]/emoduli); 
                 for(int iii = 0; iii < 6; iii++)	{
-                	stresses[NstressEntries*nr_ele + iii] = stressbuf[iii];
-                	strains[NstrainEntries*nr_ele + iii] = strainbuf[iii];
+                    stresses[NstressEntries*nr_ele + iii] = stressbuf[iii];
+                    strains[NstrainEntries*nr_ele + iii] = strainbuf[iii];
                 }
                 stresses[NstressEntries*nr_ele + NstressEntries - 1] = VonMises[nr_ele];
                 strains[NstrainEntries*nr_ele + NstrainEntries - 2] = SED[nr_ele];
                 strains[NstrainEntries*nr_ele + NstrainEntries - 1] = eff[nr_ele];
 
-				nr_ele++;
+                nr_ele++;
 
-			}
-			delete[] strainbuf;
-			delete[] stressbuf;
-		}
+            }
+            delete[] strainbuf;
+            delete[] stressbuf;
+        }
 
-	private:
-		Grid& _grid;
+    private:
+        Grid& _grid;
 };
 
 #endif /* POSTPROCESSING_H */

@@ -15,6 +15,9 @@ ParOSol TU Wien is a fork of ParOSol. The following changes have been made:
 3. The ParOSol output is formatted like ParFE output (but only to the level needed by the postprocessing
 tools used at ILSB TU Wien.)
 
+Note that the data format used by the original ParOSol is not compatible with
+this version! You can use the .h5 as well, but they need to be patched first.
+
 The changes in code have been tested well at the ILSB TU Wien, but are still provided without warranty
 of any kind. Use at your own discretion.
 
