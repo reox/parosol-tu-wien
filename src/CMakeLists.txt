@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
 
+# read Parameters from h5 file - does not work currently
+#add_definitions(-DWITH_PARAMETERS)
+
+
+# Use H5 parallel processing, does not work currently! Use serial lib!
+#add_definitions(-DH5_HAVE_PARALLEL)
+
 PROJECT( parosol )
 SET( parosol_src GReader.cpp GWriter.cpp JacobiSmoother.cpp Toolbox.cpp AsciiImage.cpp HDF5Image.cpp AsciiImageMirrored.cpp fem.cpp est_ev.cpp Chebyshev.cpp PCGSolver.cpp main.cpp)
 
