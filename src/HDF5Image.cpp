@@ -189,6 +189,7 @@ int HDF5Image::Scan(BaseGrid* grid)
     extern double global_poisson_ratio;
     global_poisson_ratio = grid->poisons_ratio;
 
+#ifdef WITH_PARAMETERS
     // FIXME program should not end if /Parameters is not found
     if (!reader.Select("/Parameters")) {
         PCOUT(MyPID, "Error Selecting Parameters!!!\n")
@@ -211,6 +212,7 @@ int HDF5Image::Scan(BaseGrid* grid)
     delete []matArray;
     delete []EModArray;
     delete []NuArray;
+#endif
 
     PCOUT(MyPID, "\nHDF5 ImageReader: \n")
     PCOUT(MyPID, "  global Dimension: " << grid->gdim[0] << " " << grid->gdim[1] << " " << grid->gdim[2] << "\n")
