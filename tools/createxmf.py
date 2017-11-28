@@ -86,16 +86,22 @@ sVM =    "     <Attribute Name=\"S_vonMises\" AttributeType=\"Scalar\" Center=\"
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
+eff =    "     <Attribute Name=\"EffectiveStrain\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
+         "           "+filename+":/Solution/EFF\n" \
+         "       </DataItem>\n" \
+         "     </Attribute>\n"
+
 # FIXME size is nr_elements 8
-eleStrain =    "     <Attribute Name=\"eleStrain\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 8\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
+eleStrain =    "     <Attribute Name=\"eleStrain\" AttributeType=\"Tensor6\" Center=\"Cell\">\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 6\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Solution/Element strain\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
 
 # FIXME size is nr_elements 7
-eleStress =    "     <Attribute Name=\"eleStress\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 7\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
+eleStress =    "     <Attribute Name=\"eleStress\" AttributeType=\"Tensor6\" Center=\"Cell\">\n" \
+         "       <DataItem Dimensions=\""+repr(nr_elements)+" 6\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
          "           "+filename+":/Solution/Element stress\n" \
          "       </DataItem>\n" \
          "     </Attribute>\n"
@@ -118,7 +124,8 @@ with open(outfilename, 'w') as outfile:
                              sForce,
                              sSED,
                              sVM,
-                             #eleStrain,
-                             #eleStress,
+                             eff,
+                             eleStrain,
+                             eleStress,
                              sMaterial,
                              sEnd]))

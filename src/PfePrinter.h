@@ -196,10 +196,9 @@ class PfePrinter {
             Writer->Write("Nodal displacements", x.data(), _grid.GetNrNodesGlobal(),_grid.GetNrPrivateNodes(), 3, _grid.GetNodeOffset());
             Writer->Write("VonMises", m.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 1, _grid.GetElemOffset());
             Writer->Write("SED", s.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 1, _grid.GetElemOffset());
-            int NstressEntries = 7;
-            int NstrainEntries = 8;
-            Writer->Write("Element stress", stresses.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), NstressEntries, _grid.GetElemOffset());
-            Writer->Write("Element strain", strains.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), NstrainEntries, _grid.GetElemOffset());
+            Writer->Write("EFF", eff.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 1, _grid.GetElemOffset());
+            Writer->Write("Element stress", stresses.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 6, _grid.GetElemOffset());
+            Writer->Write("Element strain", strains.data(), _grid.GetNrElemGlobal(),_grid.GetNrElem(), 6, _grid.GetElemOffset());
             Writer->Write("Nodal forces", force.data(), _grid.GetNrNodesGlobal(),_grid.GetNrPrivateNodes(), 3, _grid.GetNodeOffset());
         }
 

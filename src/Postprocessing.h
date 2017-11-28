@@ -75,10 +75,9 @@ class PostProcess
             VonMises.setZero(nr_elem);
             SED.setZero(nr_elem);
             eff.setZero(nr_elem);
-            int NstressEntries = 7;
-            int NstrainEntries = 8;
-            stresses.setZero(nr_elem*NstressEntries);
-            strains.setZero(nr_elem*NstrainEntries);
+            // symmetric tensor values
+            stresses.setZero(nr_elem*6);
+            strains.setZero(nr_elem*6);
 
 
             //fetch the 24 values in pref and store store
@@ -106,17 +105,13 @@ class PostProcess
                         &sigma, &theta);
                 VonMises[nr_ele] = stressbuf[6];
                 SED[nr_ele] = strainbuf[6];
-                eff[nr_ele] = sqrt(2*SED[nr_ele]/emoduli); 
-                for(int iii = 0; iii < 6; iii++)	{
-                    stresses[NstressEntries*nr_ele + iii] = stressbuf[iii];
-                    strains[NstrainEntries*nr_ele + iii] = strainbuf[iii];
+                eff[nr_ele] = sqrt(2*SED[nr_ele]/emoduli);
+                for(int iii = 0; iii < 6; iii++) {
+                    stresses[6 * nr_ele + iii] = stressbuf[iii];
+                    strains[6 * nr_ele + iii] = strainbuf[iii];
                 }
-                stresses[NstressEntries*nr_ele + NstressEntries - 1] = VonMises[nr_ele];
-                strains[NstrainEntries*nr_ele + NstrainEntries - 2] = SED[nr_ele];
-                strains[NstrainEntries*nr_ele + NstrainEntries - 1] = eff[nr_ele];
 
                 nr_ele++;
-
             }
             delete[] strainbuf;
             delete[] stressbuf;
