@@ -121,7 +121,7 @@ class PfePrinter {
             Eigen::VectorXi MatIDs(_grid.GetNrElem());
             t_index i =0;
             for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements())	{
-                MatIDs[i]=_grid.invEmodMap[_grid.GetElementWeight()];
+                MatIDs[i] = _grid.GetElementWeight();
                 i++;
             }
             MPI_Barrier(MPI_COMM_WORLD);
