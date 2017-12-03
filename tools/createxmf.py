@@ -23,6 +23,9 @@
 import h5py
 import sys
 import os
+from xml.etree.ElementTree import Element, SubElement
+from xml.etree import ElementTree
+from xml.dom import minidom
 
 if len(sys.argv) != 2:
   print("usage: "+sys.argv[0]+" filename")
@@ -44,86 +47,44 @@ nr_elements, _ = f['Mesh']['Elements'].shape
 
 print("nodes: "+str(nr_nodes)+" elements: "+str(nr_elements))
 
-# xml
-sStart = "<?xml version=\"1.0\" ?>\n" \
-         "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n" \
-         "<Xdmf Version=\"2.0\">\n" \
-         " <Domain>\n" \
-         "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n" 
+def data_item(parent, dimensions, numbertype, precision, data):
+    x = SubElement(parent, 'DataItem', {'Dimensions': ' '.join(map(str, dimensions)),
+                                        'Format': 'HDF5',
+                                        'NumberType': numbertype,
+                                        'Precision': precision})
+    x.text = data
+    return x
 
-sMesh =  "     <Topology TopologyType=\"Hexahedron\" NumberOfElements=\""+repr(nr_elements)+"\" BaseOffset=\"1\" >\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 8\" NumberType=\"Int\" Precision=\"8\" Format=\"HDF\">\n" \
-         "         "+filename+":/Mesh/Elements\n" \
-         "       </DataItem>\n" \
-         "     </Topology>\n" \
-         "     <Geometry GeometryType=\"XYZ\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_nodes)+" 3\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n" \
-         "         "+filename+":/Mesh/Coordinates\n" \
-         "       </DataItem>\n" \
-         "     </Geometry>\n"
+def attribute(parent, name, atype, center, dimensions, numbertype, precision, data):
+    a = SubElement(parent, 'Attribute', {'Name': name,
+                                         'AttributeType': atype,
+                                         'Center': center})
+    data_item(a, dimensions, numbertype, precision, data)
 
-sDisp =  "     <Attribute Name=\"Displacement\" AttributeType=\"Vector\" Center=\"Node\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_nodes)+" 3\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "         "+filename+":/Solution/Nodal displacements\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
+xdmf = Element('Xdmf')
+xdmf.set('version', '2.2')
+domain = SubElement(xdmf, 'Domain')
+grid = SubElement(domain, 'Grid', {'Name': 'mesh', 'GridType': 'Uniform'})
 
-sForce=  "     <Attribute Name=\"Force\" AttributeType=\"Vector\" Center=\"Node\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_nodes)+" 3\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "         "+filename+":/Solution/Nodal forces\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
 
-sSED =   "     <Attribute Name=\"SED\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "           "+filename+":/Solution/SED\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
+mesh_topo = SubElement(grid, 'Topology', {'TopologyType': 'Hexahedron',
+                                          'NumberOfElements': str(nr_elements),
+                                          'BaseOffset': "1"})
+data_item(mesh_topo, (nr_elements, 8), 'Int', "8", "{}:/Mesh/Elements".format(filename))
 
-sVM =    "     <Attribute Name=\"S_vonMises\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "           "+filename+":/Solution/VonMises\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
+geom = SubElement(grid, 'Geometry', {'GeometryType': 'XYZ'})
+data_item(geom, (nr_nodes, 3), 'Float', "4", "{}:/Mesh/Coordinates".format(filename))
 
-eff =    "     <Attribute Name=\"EffectiveStrain\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "           "+filename+":/Solution/EFF\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
+attribute(grid, 'Displacement', 'Vector', 'Node', (nr_nodes, 3), 'Float', "8", "{}:/Solution/Nodal displacements".format(filename))
+attribute(grid, 'Force', 'Vector', 'Node', (nr_nodes, 3), 'Float', "8", "{}:/Solution/Nodal forces".format(filename))
+attribute(grid, 'SED', 'Scalar', 'Cell', (nr_elements, 1), 'Float', "8", "{}:/Solution/SED".format(filename))
+attribute(grid, 'vonMises', 'Scalar', 'Cell', (nr_elements, 1), 'Float', "8", "{}:/Solution/VonMises".format(filename))
+attribute(grid, 'EFF', 'Scalar', 'Cell', (nr_elements, 1), 'Float', "8", "{}:/Solution/EFF".format(filename))
+attribute(grid, 'Strain', 'Tensor6', 'Cell', (nr_elements, 6), 'Float', "8", "{}:/Solution/Element strain".format(filename))
+attribute(grid, 'Stress', 'Tensor6', 'Cell', (nr_elements, 6), 'Float', "8", "{}:/Solution/Element stress".format(filename))
+attribute(grid, 'Material ID', 'Scalar', 'Cell', (nr_elements, 1), 'Float', "8", "{}:/Mesh/Material IDs".format(filename))
 
-eleStrain =    "     <Attribute Name=\"eleStrain\" AttributeType=\"Tensor6\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 6\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "           "+filename+":/Solution/Element strain\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
-
-eleStress =    "     <Attribute Name=\"eleStress\" AttributeType=\"Tensor6\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 6\" Format=\"HDF\" NumberType=\"Float\" Precision=\"8\" >\n" \
-         "           "+filename+":/Solution/Element stress\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
-
-sMaterial ="     <Attribute Name=\"MaterialID\" AttributeType=\"Scalar\" Center=\"Cell\">\n" \
-         "       <DataItem Dimensions=\""+repr(nr_elements)+" 1\" Format=\"HDF\" NumberType=\"Int\" Precision=\"4\" >\n" \
-         "           "+filename+":/Mesh/Material IDs\n" \
-         "       </DataItem>\n" \
-         "     </Attribute>\n"
-
-sEnd =   "   </Grid>\n" \
-         " </Domain>\n" \
-         "</Xdmf>\n" 
 #write file
 outfilename = filepath.replace(".h5",".xmf")
 with open(outfilename, 'w') as outfile:
-    outfile.write("\n".join([sStart,
-                             sMesh,
-                             sDisp,
-                             sForce,
-                             sSED,
-                             sVM,
-                             eff,
-                             eleStrain,
-                             eleStress,
-                             sMaterial,
-                             sEnd]))
+    outfile.write(minidom.parseString(ElementTree.tostring(xdmf)).toprettyxml(indent="    "))
