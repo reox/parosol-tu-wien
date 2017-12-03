@@ -90,13 +90,13 @@ int HDF5Image::Scan(BaseGrid* grid)
     MyPID = mpi_rank;
     PCOUT(MyPID, " Generatin mesh.... \n")
 
-    _procx = _layout.CPUGrid()[0];
+        _procx = _layout.CPUGrid()[0];
     _procy = _layout.CPUGrid()[1];
     _procz = _layout.CPUGrid()[2];
 
     PCOUT(MyPID, " compute dimension.... using cores in x: "<< _procx << " in y: "<<_procy <<" in z: "<<_procz<<"\n")
-    //setting left corner
-    grid->corner_x = 0;
+        //setting left corner
+        grid->corner_x = 0;
     grid->corner_y = 0;
     grid->corner_z = 0;
 
@@ -112,7 +112,6 @@ int HDF5Image::Scan(BaseGrid* grid)
     reader.GetSizeOfDataset("Image",global_dims_of_hdf5, 3);
 
     PCOUT(MyPID, "Image has following dimension: " << global_dims_of_hdf5[0] << " " << global_dims_of_hdf5[1] << " " << global_dims_of_hdf5[2] << std::endl;)
-
         for(int i=0; i<3; i++) {
             grid->gdim[i] = global_dims_of_hdf5[2-i];
             grid->ldim[i] = global_dims_of_hdf5[2-i];
@@ -180,14 +179,23 @@ int HDF5Image::Scan(BaseGrid* grid)
     timer.Stop("BC");
     elapsed_time = timer.ElapsedTime("BC");
     PCOUT(MyPID, "Time for Reading BC: " << COUTTIME(elapsed_time) << "s\n");
+
+    // Reading Voxelsize, e.g. spatial resolution
     double res;
-    reader.Read("Voxelsize", res);
+    hsize_t my_v_offset = 0;
+    hsize_t my_v_count = 1;
+    reader.Read("Voxelsize", &res, &my_v_offset, &my_v_count, 1);
     for(int i=0; i<3; i++) {
         grid->res[i] = res;
     }
-    reader.Read("Poisons_ratio", grid->poisons_ratio);
+
+    // Reading global poisson ratio
+    my_v_offset = 0;
+    my_v_count = 1;
     extern double global_poisson_ratio;
-    global_poisson_ratio = grid->poisons_ratio;
+    reader.Read("Poisons_ratio", &global_poisson_ratio, &my_v_offset, &my_v_count, 1);
+    grid->poisons_ratio = global_poisson_ratio;
+
 
 #ifdef WITH_PARAMETERS
     // FIXME program should not end if /Parameters is not found
@@ -215,15 +223,15 @@ int HDF5Image::Scan(BaseGrid* grid)
 #endif
 
     PCOUT(MyPID, "\nHDF5 ImageReader: \n")
-    PCOUT(MyPID, "  global Dimension: " << grid->gdim[0] << " " << grid->gdim[1] << " " << grid->gdim[2] << "\n")
-    PCOUT(MyPID, "  local Dimension: " << grid->ldim[0] << " " << grid->ldim[1] << " " << grid->ldim[2] << " Resolution: " << grid->res[0] << "\n")
-    PCOUT(MyPID, "  Poison's ratio: " << grid->poisons_ratio << "\n")
+        PCOUT(MyPID, "  global Dimension: " << grid->gdim[0] << " " << grid->gdim[1] << " " << grid->gdim[2] << "\n")
+        PCOUT(MyPID, "  local Dimension: " << grid->ldim[0] << " " << grid->ldim[1] << " " << grid->ldim[2] << " Resolution: " << grid->res[0] << "\n")
+        PCOUT(MyPID, "  Poison's ratio: " << grid->poisons_ratio << "\n")
 
-    long num_gl_bc[2], num_loc_bc[2];
+        long num_gl_bc[2], num_loc_bc[2];
     num_loc_bc[0]=grid->fixed_nodes_values.size();
     num_loc_bc[1]=grid->loaded_nodes_values.size();
     MPI_Reduce(&num_loc_bc, &num_gl_bc, 2, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD );
     PCOUT(MyPID, "  BC: Fixednodesize: " << num_gl_bc[0] << " loadednodesize " << num_gl_bc[1] << "\n")
 
-    return 0;
+        return 0;
 }
