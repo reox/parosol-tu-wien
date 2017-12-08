@@ -67,7 +67,7 @@ class PfePrinter {
             PrintCoord("Coordinates");
             PrintElems("Elements");
             PrintMaterialIDs("Material IDs");
-            PrintBC();
+            // PrintBC();  // not working... write only 0...
         }
 
         //! Print all Boundary Conditions in to the fixed node Data Set.
@@ -118,6 +118,7 @@ class PfePrinter {
 
         void PrintMaterialIDs(std::string dset) {
             Writer->Select("/Mesh");
+            // TODO actually the values should be Double, but we write Int here!
             Eigen::VectorXi MatIDs(_grid.GetNrElem());
             t_index i =0;
             for(_grid.initIterateOverElements(); _grid.TestIterateOverElements(); _grid.IncIterateOverElements())	{
@@ -132,10 +133,9 @@ class PfePrinter {
         void PrintCoord(std::string dset) {
             Writer->Select("/Mesh");
 
-
             t_octree_key k;
             std::vector<OctreeNode> &grid = _grid.GetOctGrid();
-            std::vector<OctreeNode>::iterator iter; 
+            std::vector<OctreeNode>::iterator iter;
             int x =0,y=0,z=0;
             double res[3];
             _grid.GetRes(res);
