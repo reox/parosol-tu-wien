@@ -28,91 +28,91 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  if (argc < 4) {
-    cout << "usage: " << argv[0] << "factor infile outfile";
-    return 0;
+    if (argc < 4) {
+        cout << "usage: " << argv[0] << "factor infile outfile";
+        return 0;
     }
-  int scale = atoi(argv[1]);
-  fstream ifst(argv[2], fstream::in);
-  fstream ofst(argv[3], fstream::out);
-  int sizex, sizey, sizez;
-  ifst >> sizex;
-  ifst >> sizey;
-  ifst >> sizez;
-  int m;
-  ifst >> m;
-  //cout << "m: " << m << endl;
-  double *elas = new double[m];
-  for( int i=0; i < m; i++) {
-    ifst >> elas[i];
+    int scale = atoi(argv[1]);
+    fstream ifst(argv[2], fstream::in);
+    fstream ofst(argv[3], fstream::out);
+    int sizex, sizey, sizez;
+    ifst >> sizex;
+    ifst >> sizey;
+    ifst >> sizez;
+    int m;
+    ifst >> m;
+    //cout << "m: " << m << endl;
+    double *elas = new double[m];
+    for( int i=0; i < m; i++) {
+        ifst >> elas[i];
     }
 
-  short *image = new short[sizex*sizey*sizez];
-  for (long z =0; z <sizez;z++) {
-    for (long y =0; y <sizey;y++) {
-      for (long x =0; x <sizex;x++) {
-        ifst >> image[(z*sizey+y)*sizex+x];
-      }
-    }
-  }
-  short *imageneu = new short[sizex*sizey*sizez*scale*scale*scale];
-
-  int pos;
-  int sz = scale * sizez;
-  int sy = scale * sizey;
-  int sx = scale * sizex;
-  int nx,ny,nz;
-
-  for (long z =0; z <sizez;z++) {
-    for (long y =0; y <sizey;y++) {
-      for (long x =0; x <sizex;x++) {
-        for(int i =0; i < scale; i++) {
-          for(int j =0; j < scale; j++) {
-            for(int k =0; k < scale; k++) {
-              nx = x;
-              if ( k%2==1 )
-                nx = sizex - 1 -x;
-              nx += sizex*k;
-
-              ny = y;
-              if ( j%2==1 )
-                ny = sizey - 1 -y;
-              ny += sizey*j;
-
-              nz = z;
-              if ( i%2==1 )
-                nz = sizez - 1 -z;
-              nz += sizez*i;
-
-              pos = (nz*sy+ny)*sx+nx;
-              imageneu[pos] = image[(z*sizey+y)*sizex+x];
+    short *image = new short[sizex*sizey*sizez];
+    for (long z =0; z <sizez;z++) {
+        for (long y =0; y <sizey;y++) {
+            for (long x =0; x <sizex;x++) {
+                ifst >> image[(z*sizey+y)*sizex+x];
             }
-          }
         }
-      }
     }
-  }
+    short *imageneu = new short[sizex*sizey*sizez*scale*scale*scale];
 
+    int pos;
+    int sz = scale * sizez;
+    int sy = scale * sizey;
+    int sx = scale * sizex;
+    int nx,ny,nz;
 
-  ofst << sizex*scale <<" ";
-  ofst << sizey*scale <<" ";
-  ofst << sizez*scale << endl;
-  ofst << m << " ";
-  //cout << "m: " << m << endl;
-  for( int i=0; i < m; i++) {
-    ofst << elas[i] << " ";
-  }
-  ofst << endl;
+    for (long z =0; z <sizez;z++) {
+        for (long y =0; y <sizey;y++) {
+            for (long x =0; x <sizex;x++) {
+                for(int i =0; i < scale; i++) {
+                    for(int j =0; j < scale; j++) {
+                        for(int k =0; k < scale; k++) {
+                            nx = x;
+                            if ( k%2==1 )
+                                nx = sizex - 1 -x;
+                            nx += sizex*k;
 
-  for (long z =0; z <sizez*scale;z++) {
-    for (long y =0; y <sizey*scale;y++) {
-      for (long x =0; x <sizex*scale;x++) {
-        ofst << imageneu[(z*sizey*scale+y)*sizex*scale+x] << " ";
-      }
-      ofst << endl;
+                            ny = y;
+                            if ( j%2==1 )
+                                ny = sizey - 1 -y;
+                            ny += sizey*j;
+
+                            nz = z;
+                            if ( i%2==1 )
+                                nz = sizez - 1 -z;
+                            nz += sizez*i;
+
+                            pos = (nz*sy+ny)*sx+nx;
+                            imageneu[pos] = image[(z*sizey+y)*sizex+x];
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 
 
-  return 0;
+    ofst << sizex*scale <<" ";
+    ofst << sizey*scale <<" ";
+    ofst << sizez*scale << endl;
+    ofst << m << " ";
+    //cout << "m: " << m << endl;
+    for( int i=0; i < m; i++) {
+        ofst << elas[i] << " ";
+    }
+    ofst << endl;
+
+    for (long z =0; z <sizez*scale;z++) {
+        for (long y =0; y <sizey*scale;y++) {
+            for (long x =0; x <sizex*scale;x++) {
+                ofst << imageneu[(z*sizey*scale+y)*sizex*scale+x] << " ";
+            }
+            ofst << endl;
+        }
+    }
+
+
+    return 0;
 }

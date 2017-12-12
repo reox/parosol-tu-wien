@@ -52,12 +52,12 @@ struct image
         }
     }
 
-inline void put(int x, int y, int z, short value)
+    inline void put(int x, int y, int z, short value)
     {
         _data[(z*dimy+y)*dimx+x]=value; 
     }
 
-inline short get(int x, int y, int z)
+    inline short get(int x, int y, int z)
     {
         return _data[(z*dimy+y)*dimx+x]; 
     }
@@ -106,44 +106,44 @@ void fractal(int it, image &base, image &out, int posx, int posy, int posz)
 
 int main(int argc, char* argv[])
 {
-  if (argc < 4) {
-    cout << "usage: " << argv[0] << " NumberRecursion infile outfile";
+    if (argc < 4) {
+        cout << "usage: " << argv[0] << " NumberRecursion infile outfile";
+        return 0;
+    }
+    int maxiter = atoi(argv[1]);
+    fstream ifst(argv[2], fstream::in);
+    fstream ofst(argv[3], fstream::out);
+
+    int sizex, sizey, sizez;
+    ifst >> sizex;
+    ifst >> sizey;
+    ifst >> sizez;
+    int osizex = pow(sizex, maxiter);
+    int osizey = pow(sizey, maxiter);
+    int osizez = pow(sizez, maxiter);
+    int m;
+    ifst >> m;
+    double *elas = new double[m];
+    for( int i=0; i < m; i++) {
+        ifst >> elas[i];
+    }
+
+    image inpic(sizex, sizey, sizez);
+    inpic.read(ifst);
+
+    image outpic(osizex, osizey, osizez);
+    fractal(maxiter-1, inpic, outpic, 0,0,0);
+
+    ofst << osizex <<" ";
+    ofst << osizey <<" ";
+    ofst << osizez << endl;
+    ofst << m << " ";
+    for( int i=0; i < m; i++) {
+        ofst << elas[i] << " ";
+    }
+    ofst << endl;
+
+    outpic.write(ofst);
+
     return 0;
-    }
-  int maxiter = atoi(argv[1]);
-  fstream ifst(argv[2], fstream::in);
-  fstream ofst(argv[3], fstream::out);
-
-  int sizex, sizey, sizez;
-  ifst >> sizex;
-  ifst >> sizey;
-  ifst >> sizez;
-  int osizex = pow(sizex, maxiter);
-  int osizey = pow(sizey, maxiter);
-  int osizez = pow(sizez, maxiter);
-  int m;
-  ifst >> m;
-  double *elas = new double[m];
-  for( int i=0; i < m; i++) {
-    ifst >> elas[i];
-    }
-
-  image inpic(sizex, sizey, sizez);
-  inpic.read(ifst);
-
-  image outpic(osizex, osizey, osizez);
-  fractal(maxiter-1, inpic, outpic, 0,0,0);
-
-  ofst << osizex <<" ";
-  ofst << osizey <<" ";
-  ofst << osizez << endl;
-  ofst << m << " ";
-  for( int i=0; i < m; i++) {
-    ofst << elas[i] << " ";
-  }
-  ofst << endl;
-
-  outpic.write(ofst);
-
-  return 0;
 }

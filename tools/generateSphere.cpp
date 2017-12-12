@@ -29,70 +29,70 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  fstream ofst("sphere.txt", fstream::out);
-  int sizex, sizey, sizez;
-  int s = 101;
-  double cx, cy;
-  cx = cy = ((double)s-1)/2;
-  double cz = cx -2;
-  sizex = sizey = s;
-  sizez = s - 4;
-  int m = 3;
-  //cout << "m: " << m << endl;
-  double *elas = new double[m];
-  elas[0] = 0;
-  elas[1] = 5.5;
-  elas[2] = 1.1;
+    fstream ofst("sphere.txt", fstream::out);
+    int sizex, sizey, sizez;
+    int s = 101;
+    double cx, cy;
+    cx = cy = ((double)s-1)/2;
+    double cz = cx -2;
+    sizex = sizey = s;
+    sizez = s - 4;
+    int m = 3;
+    //cout << "m: " << m << endl;
+    double *elas = new double[m];
+    elas[0] = 0;
+    elas[1] = 5.5;
+    elas[2] = 1.1;
 
-  short *imageneu = new short[sizex*sizey*sizez];
+    short *imageneu = new short[sizex*sizey*sizez];
 
-  int pos;
-  double r;
+    int pos;
+    double r;
 
-  for (long z =0; z <sizez;z++) {
-    for (long y =0; y <sizey;y++) {
-      for (long x =0; x <sizex;x++) {
-		  r = (x-cx)*(x-cx)+(y-cy)*(y-cy)+(z-cz)*(z-cz);
-          pos = (z*sizey+y)*sizex+x;
+    for (long z =0; z <sizez;z++) {
+        for (long y =0; y <sizey;y++) {
+            for (long x =0; x <sizex;x++) {
+                r = (x-cx)*(x-cx)+(y-cy)*(y-cy)+(z-cz)*(z-cz);
+                pos = (z*sizey+y)*sizex+x;
 
 
-		  if ( r < cx*cx) {
-			  if ( r < (cx*cx)*0.64) {
-				  if (r < (cx*cx)*0.25) {
-                      imageneu[pos] = 0;
-                  } else { 
-                      imageneu[pos] = 1;
-                  }
-              } else {
-                  imageneu[pos] = 2;
-              }
-          } else {
-              imageneu[pos] = 0;
-          }
-      }
+                if ( r < cx*cx) {
+                    if ( r < (cx*cx)*0.64) {
+                        if (r < (cx*cx)*0.25) {
+                            imageneu[pos] = 0;
+                        } else { 
+                            imageneu[pos] = 1;
+                        }
+                    } else {
+                        imageneu[pos] = 2;
+                    }
+                } else {
+                    imageneu[pos] = 0;
+                }
+            }
+        }
     }
-  }
 
 
-  ofst << sizex <<" ";
-  ofst << sizey <<" ";
-  ofst << sizez << endl;
-  ofst << m << " ";
-  //cout << "m: " << m << endl;
-  for( int i=0; i < m; i++) {
-    ofst << elas[i] << " ";
-  }
-  ofst << endl;
-
-  for (long z =0; z <sizez;z++) {
-    for (long y =0; y <sizey;y++) {
-      for (long x =0; x <sizex;x++) {
-        ofst << imageneu[(z*sizey+y)*sizex+x] << " ";
-      }
-      ofst << endl;
+    ofst << sizex <<" ";
+    ofst << sizey <<" ";
+    ofst << sizez << endl;
+    ofst << m << " ";
+    //cout << "m: " << m << endl;
+    for( int i=0; i < m; i++) {
+        ofst << elas[i] << " ";
     }
-  }
+    ofst << endl;
+
+    for (long z =0; z <sizez;z++) {
+        for (long y =0; y <sizey;y++) {
+            for (long x =0; x <sizex;x++) {
+                ofst << imageneu[(z*sizey+y)*sizex+x] << " ";
+            }
+            ofst << endl;
+        }
+    }
 
 
-  return 0;
+    return 0;
 }

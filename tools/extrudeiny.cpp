@@ -28,63 +28,63 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  if (argc < 3) {
-    cout << "usage: " << argv[0] << " infile outfile";
+    if (argc < 3) {
+        cout << "usage: " << argv[0] << " infile outfile";
+        return 0;
+    }
+    fstream ifst(argv[1], fstream::in);
+    fstream ofst(argv[2], fstream::out);
+    int sizex, sizey, sizez;
+    ifst >> sizex;
+    ifst >> sizey;
+    ifst >> sizez;
+    int m;
+    ifst >> m;
+    //cout << "m: " << m << endl;
+    double *elas = new double[m];
+    for( int i=0; i < m; i++) {
+        ifst >> elas[i];
+    }
+
+    short *image = new short[sizex*sizey*sizez];
+    for (long z =0; z <sizez;z++) {
+        for (long x =0; x <sizex;x++) {
+            ifst >> image[z*sizex+x];
+        }
+    }
+    short *imageneu = new short[sizex*sizey*sizez];
+
+    int pos;
+
+    for (long z =0; z <sizez;z++) {
+        for (long x =0; x <sizex;x++) {
+            for (long y =0; y <sizey;y++) {
+                pos = (z*sizey+y)*sizex+x;
+                imageneu[pos] = image[z*sizex+x];
+            }
+        }
+    }
+
+
+    ofst << sizex <<" ";
+    ofst << sizey <<" ";
+    ofst << sizez << endl;
+    ofst << m << " ";
+    //cout << "m: " << m << endl;
+    for( int i=0; i < m; i++) {
+        ofst << elas[i] << " ";
+    }
+    ofst << endl;
+
+    for (long z =0; z <sizez;z++) {
+        for (long y =0; y <sizey;y++) {
+            for (long x =0; x <sizex;x++) {
+                ofst << imageneu[(z*sizey+y)*sizex+x] << " ";
+            }
+            ofst << endl;
+        }
+    }
+
+
     return 0;
-    }
-  fstream ifst(argv[1], fstream::in);
-  fstream ofst(argv[2], fstream::out);
-  int sizex, sizey, sizez;
-  ifst >> sizex;
-  ifst >> sizey;
-  ifst >> sizez;
-  int m;
-  ifst >> m;
-  //cout << "m: " << m << endl;
-  double *elas = new double[m];
-  for( int i=0; i < m; i++) {
-    ifst >> elas[i];
-    }
-
-  short *image = new short[sizex*sizey*sizez];
-  for (long z =0; z <sizez;z++) {
-      for (long x =0; x <sizex;x++) {
-        ifst >> image[z*sizex+x];
-      }
-    }
-  short *imageneu = new short[sizex*sizey*sizez];
-
-  int pos;
-
-  for (long z =0; z <sizez;z++) {
-	  for (long x =0; x <sizex;x++) {
-		  for (long y =0; y <sizey;y++) {
-			  pos = (z*sizey+y)*sizex+x;
-			  imageneu[pos] = image[z*sizex+x];
-		  }
-	  }
-  }
-
-
-  ofst << sizex <<" ";
-  ofst << sizey <<" ";
-  ofst << sizez << endl;
-  ofst << m << " ";
-  //cout << "m: " << m << endl;
-  for( int i=0; i < m; i++) {
-    ofst << elas[i] << " ";
-  }
-  ofst << endl;
-
-  for (long z =0; z <sizez;z++) {
-    for (long y =0; y <sizey;y++) {
-      for (long x =0; x <sizex;x++) {
-        ofst << imageneu[(z*sizey+y)*sizex+x] << " ";
-      }
-      ofst << endl;
-    }
-  }
-
-
-  return 0;
 }

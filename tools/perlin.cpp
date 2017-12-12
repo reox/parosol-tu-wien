@@ -41,20 +41,20 @@
 int main (int argc, char** argv)
 {
     std::string usage = std::string("usage: \n") + argv[0]
-                      + std::string(" [--octaves arg (1)]\n")
-                      + std::string(" [--seed arg (0)]\n")
-                      + std::string(" [--upperthres arg (0.23)]\n")
-                      + std::string(" [--lowerthres arg (-0.23)]\n")
-                      + std::string(" [--fsize arg (59)]\n")
-                      + std::string(" [--sizex arg (160)]\n")
-                      + std::string(" [--sizey arg (160)]\n")
-                      + std::string(" [--sizez arg (160)]\n")
-                      + std::string(" filename\n"); 
-	
+        + std::string(" [--octaves arg (1)]\n")
+        + std::string(" [--seed arg (0)]\n")
+        + std::string(" [--upperthres arg (0.23)]\n")
+        + std::string(" [--lowerthres arg (-0.23)]\n")
+        + std::string(" [--fsize arg (59)]\n")
+        + std::string(" [--sizex arg (160)]\n")
+        + std::string(" [--sizey arg (160)]\n")
+        + std::string(" [--sizez arg (160)]\n")
+        + std::string(" filename\n");
+
     if (argc < 2) {
         std::cout << usage;
-		return -1;
-	}
+        return -1;
+    }
 
     int freq = 1;
     int octaves = 1;
@@ -97,11 +97,11 @@ int main (int argc, char** argv)
     }
 
     std::cout << "used parameter:\n"
-            << " octaves:       \t" << octaves << "\n"
-            << " seed:          \t" << seed << "\n"
-            << " upperthreshold:\t" << upperthres << "\n"
-            << " lowerthreshold:\t" << lowerthres << "\n"
-            << " fsize:         \t" << fsize<< "\n";
+        << " octaves:       \t" << octaves << "\n"
+        << " seed:          \t" << seed << "\n"
+        << " upperthreshold:\t" << upperthres << "\n"
+        << " lowerthreshold:\t" << lowerthres << "\n"
+        << " fsize:         \t" << fsize<< "\n";
 
     std::fstream ofst(file.c_str(), std::fstream::out);
     noise::module::Perlin perlin;
@@ -114,18 +114,18 @@ int main (int argc, char** argv)
     Image bone(sizex, sizey, sizez);
 
     for(int z=0; z<sizez;z++) 
-    for(int y=0; y<sizey;y++) 
-    for(int x=0; x<sizex;x++) {
-        //Take two Perlin random numbers and use the intersection
-        double value = perlin.GetValue (x/fsize+0.5, y/fsize+0.5, z/fsize+0.5);
-        double value2 = perlin.GetValue (x/fsize*0.95+33.3, y/fsize*0.99+42.42, z/fsize*0.9+314.314);
-        out=0;
-        if (value > lowerthres && value < upperthres)
-          if (value2 > lowerthres && value2 < upperthres)
-            out =1;
-        bone.put(x,y,z,out);
-    }
-     
+        for(int y=0; y<sizey;y++) 
+            for(int x=0; x<sizex;x++) {
+                //Take two Perlin random numbers and use the intersection
+                double value = perlin.GetValue (x/fsize+0.5, y/fsize+0.5, z/fsize+0.5);
+                double value2 = perlin.GetValue (x/fsize*0.95+33.3, y/fsize*0.99+42.42, z/fsize*0.9+314.314);
+                out=0;
+                if (value > lowerthres && value < upperthres)
+                    if (value2 > lowerthres && value2 < upperthres)
+                        out =1;
+                bone.put(x,y,z,out);
+            }
+
     CheckForBiggestComponent comp;
     comp(bone);
 

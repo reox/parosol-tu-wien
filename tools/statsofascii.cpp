@@ -28,35 +28,35 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  if (argc < 1)
-    cout << "usage: " << argv[0] << "infile ";
-  fstream ifst(argv[1], fstream::in);
-  long sizex, sizey, sizez;
-  ifst >> sizex;
-  ifst >> sizey;
-  ifst >> sizez;
-  int m;
-  long mat1 = 0, mat2 =0;
-  ifst >> m;
-  //cout << "m: " << m << endl;
-  double *elas = new double[m];
-  for( int i=0; i < m; i++) {
-    ifst >> elas[i];
+    if (argc < 1)
+        cout << "usage: " << argv[0] << "infile ";
+    fstream ifst(argv[1], fstream::in);
+    long sizex, sizey, sizez;
+    ifst >> sizex;
+    ifst >> sizey;
+    ifst >> sizez;
+    int m;
+    long mat1 = 0, mat2 =0;
+    ifst >> m;
+    //cout << "m: " << m << endl;
+    double *elas = new double[m];
+    for( int i=0; i < m; i++) {
+        ifst >> elas[i];
     }
 
-  short *image = new short[sizex*sizey*sizez];
-  for (long z =0; z <sizez;z++) {
-    for (long y =0; y <sizey;y++) {
-      for (long x =0; x <sizex;x++) {
-        ifst >> image[(z*sizey+y)*sizex+x];
-        if (image[(z*sizey+y)*sizex+x] == 0)
-          mat1++;
-        else
-          mat2++;
-      }
+    short *image = new short[sizex*sizey*sizez];
+    for (long z =0; z <sizez;z++) {
+        for (long y =0; y <sizey;y++) {
+            for (long x =0; x <sizex;x++) {
+                ifst >> image[(z*sizey+y)*sizex+x];
+                if (image[(z*sizey+y)*sizex+x] == 0)
+                    mat1++;
+                else
+                    mat2++;
+            }
+        }
     }
-  }
-  cout << "empty: :" << mat1 << " bone: " << mat2 << " ratio: " << ((double) mat2)/ (mat1+mat2);
-  cout << endl;
-  return 0;
+    cout << "empty: :" << mat1 << " bone: " << mat2 << " ratio: " << ((double) mat2)/ (mat1+mat2);
+    cout << endl;
+    return 0;
 }
