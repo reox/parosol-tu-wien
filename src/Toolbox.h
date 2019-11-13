@@ -25,4 +25,3 @@ void setcoord(double a[3], double *coord);
 void setcoord(double a, double b, double c, double *coord);
 
 #endif /* TOOLBOX_H */
-

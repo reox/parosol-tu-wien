@@ -16,71 +16,65 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef STIFFNESSMATRIX_H
 #define STIFFNESSMATRIX_H
 
-#include <string>
-#include <eigen3/Eigen/Core>
 #include "Config.h"
-
+#include <eigen3/Eigen/Core>
+#include <string>
 
 //! An Interface which describes a MatrixVector Product.
 
-
-class StiffnessMatrix 
-{
+class StiffnessMatrix {
 public:
-
   //! ElementByElementMatrix destructor
-  virtual ~StiffnessMatrix() {};
+  virtual ~StiffnessMatrix(){};
 
-   /** Compute the matrix vetctor product.
-   * 
+  /** Compute the matrix vetctor product.
+   *
    * @param x input vector
    * @param y result vector
    * @return error value
    */
-  virtual int   Apply (Eigen::VectorXd &x, Eigen::VectorXd &y) = 0;
+  virtual int Apply(Eigen::VectorXd &x, Eigen::VectorXd &y) = 0;
 
   /** Name of the Operator
-   * 
+   *
    * @return Name in an string
    */
-  virtual const std::string  Label () const = 0;
+  virtual const std::string Label() const = 0;
 
-   /** Gets the Diagonal of the operator.
-   * 
+  /** Gets the Diagonal of the operator.
+   *
    * @return diagonal
    */
-  virtual Eigen::VectorXd& Diagonal() = 0;
+  virtual Eigen::VectorXd &Diagonal() = 0;
 
-   /** Gets the number of degrees of freedom.
-   * 
+  /** Gets the number of degrees of freedom.
+   *
    * @return number of dofs
    */
-  virtual t_index GetNrDofs() =0;
+  virtual t_index GetNrDofs() = 0;
 
-   /** Computes the dot product of two vectors according the communicator is used in the matrix operator.
-   * 
+  /** Computes the dot product of two vectors according the communicator is used
+   * in the matrix operator.
+   *
    * @param a first vector
    * @param b second vector
    * @return dot product
    */
-  virtual double dot(Eigen::VectorXd &a, Eigen::VectorXd &b)=0;
-  
+  virtual double dot(Eigen::VectorXd &a, Eigen::VectorXd &b) = 0;
+
   /** Gets the process id
    * @return PID
    */
-  virtual int GetPID()=0;
-  
-  /** initializes an vector with random values according the distribution of the mesh on the computing nodes.
+  virtual int GetPID() = 0;
+
+  /** initializes an vector with random values according the distribution of the
+   * mesh on the computing nodes.
    * @param x vector that is filled with random numbers.
    */
-  virtual void SetVectorRandom(Eigen::VectorXd &x)=0;
+  virtual void SetVectorRandom(Eigen::VectorXd &x) = 0;
 };
 
 #endif /* STIFFNESSMATRIX_H */
-
-

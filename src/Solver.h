@@ -19,32 +19,26 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
-#include <string>
 #include <eigen3/Eigen/Core>
-
+#include <string>
 
 //! An interface for solvers
 
-
-class Solver 
-{
+class Solver {
 public:
-
-  virtual ~Solver() {};
+  virtual ~Solver(){};
 
   /** Solves \f[Ax=b\f]
    * @param [in] b rhs vector
    * @param [out] x solution vector
    */
-  virtual int   Solve(Eigen::VectorXd &b, Eigen::VectorXd &x) = 0;
+  virtual int Solve(Eigen::VectorXd &b, Eigen::VectorXd &x) = 0;
 
   /** Returns the name of the solver
-   * 
+   *
    * @return return the name in an string
    */
-  virtual const std::string  Label () const = 0;
-
+  virtual const std::string Label() const = 0;
 };
 
 #endif /* SOLVER_H */
-
