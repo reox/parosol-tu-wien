@@ -182,18 +182,16 @@ int HDF5Image::Scan(BaseGrid* grid)
 
     // Reading Voxelsize, e.g. spatial resolution
     double res;
-    hsize_t my_v_offset = 0;
-    hsize_t my_v_count = 1;
-    reader.Read("Voxelsize", &res, &my_v_offset, &my_v_count, 1);
+    reader.Read("Voxelsize", H5T_NATIVE_DOUBLE, &res);
+    PCOUT(MyPID, "Voxelsize: " << res << "\n");
     for(int i=0; i<3; i++) {
         grid->res[i] = res;
     }
 
     // Reading global poisson ratio
-    my_v_offset = 0;
-    my_v_count = 1;
     extern double global_poisson_ratio;
-    reader.Read("Poisons_ratio", &global_poisson_ratio, &my_v_offset, &my_v_count, 1);
+    reader.Read("Poisons_ratio", H5T_NATIVE_DOUBLE, &global_poisson_ratio);
+    PCOUT(MyPID, "Global Poison's ratio: " << global_poisson_ratio << "\n");
     grid->poisons_ratio = global_poisson_ratio;
 
 
