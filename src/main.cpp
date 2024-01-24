@@ -143,8 +143,8 @@ int main( int argc, char* argv[])
 
     //Setting up the problem
     timer.Start("Setup");
-    int maxiter = 1000;
-    int outputfreq = 4;
+    const int maxiter = 1000;
+    const int outputfreq = 1;
     PCGSolver solver(matr, prec, tol, maxiter, true, outputfreq);
     Problem<t_Ogrid> problem(matr);
     if (problem.Impose())

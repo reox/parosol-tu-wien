@@ -42,7 +42,7 @@ Chebyshev::Chebyshev(StiffnessMatrix &M, int degree, bool ZeroStart, Eigen::Vect
   if (ratio >0)
 	  _lmin = e.large/ratio;
   if (0 == _mat.GetPID())
-      std::cout << "lmax = " << _lmax << "   lmin = " << e.small << "   lmax used = " << _lmin  << std::endl;
+      std::cout << "lmax = " << e.large << "   lmin used = " << _lmin << "   lmax used = " << _lmax  << std::endl;
   }
 }
 
