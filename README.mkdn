@@ -38,3 +38,16 @@ cd build
 cmake ..
 make
 ```
+
+Then you can run the example meshes:
+
+```
+tar xvf mesh.tar.bz2
+mpirun -np 8 build/parosol mesh/h5/sphere.h5
+```
+
+And look at the results with paraview. **NOTE:** Select `XDMF Reader`!
+```
+python3 tools/createxmf.py mesh/h5/sphere.h5
+paraview mesh/h5/sphere.xmf
+```
