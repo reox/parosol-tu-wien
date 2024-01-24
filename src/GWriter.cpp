@@ -57,7 +57,7 @@ C_ASCII_GWriter::~C_ASCII_GWriter()
 bool C_ASCII_GWriter::Open()
 {
   file = fopen(filename.c_str(), "w");
-  return (file > 0);
+  return file;
 }
 
 bool C_ASCII_GWriter::Open(const std::string& a_filename)
