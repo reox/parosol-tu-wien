@@ -30,7 +30,8 @@ Refer to ParOSol licensing.
 To build on Ubuntu 22.04, run the following commands:
 
 ```
-apt install git build-essential cmake libopenmpi-dev libhdf5-openmpi-dev libeigen3-dev
+apt update
+apt install -y git build-essential cmake libopenmpi-dev libhdf5-openmpi-dev libeigen3-dev
 git clone https://github.com/reox/parosol-tu-wien.git
 cd parosol-tu-wien
 mkdir build
@@ -45,6 +46,8 @@ Then you can run the example meshes:
 tar xvf mesh.tar.bz2
 mpirun -np 8 build/parosol mesh/h5/sphere.h5
 ```
+
+(Adjust `-np` to the number of processors you have)
 
 And look at the results with paraview. **NOTE:** Select `XDMF Reader`!
 ```
