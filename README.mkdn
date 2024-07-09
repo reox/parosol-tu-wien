@@ -36,7 +36,7 @@ git clone https://github.com/reox/parosol-tu-wien.git
 cd parosol-tu-wien
 mkdir build
 cd build
-cmake ..
+cmake .. -DCMAKE_BUILD_TYPE=Release  # Note: Building "Release" brings a huge speedup!
 make
 ```
 
