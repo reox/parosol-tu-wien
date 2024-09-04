@@ -27,7 +27,9 @@ Refer to ParOSol licensing.
 
 ## Building ##
 
-To build on Debian Bookworm or Ubuntu 22.04, run the following commands:
+ParOSol was tested on Debian Bookworm, Ubuntu 22.04 and Ubuntu 24.04.
+
+To build on Debian based rystems run the following commands:
 
 ```
 apt update
