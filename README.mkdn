@@ -27,7 +27,7 @@ Refer to ParOSol licensing.
 
 ## Building ##
 
-To build on Ubuntu 22.04, run the following commands:
+To build on Debian Bookworm or Ubuntu 22.04, run the following commands:
 
 ```
 apt update
@@ -38,6 +38,7 @@ mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release  # Note: Building "Release" brings a huge speedup!
 make
+cd ..
 ```
 
 Then you can run the example meshes:
