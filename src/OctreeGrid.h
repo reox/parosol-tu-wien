@@ -1201,15 +1201,22 @@ public:
   void Compute_Smallest_Elementnumber() {
     // find the smallest number of each cpu
     t_octree_key my_smallest_elem = -1;
-    if (_OctreeGrid.size() > 0)
+    if (_OctreeGrid.size() > 0) {
       my_smallest_elem = _OctreeGrid.begin()->key;
+    }
     _smallest_elements.resize(_Nr_CPU + 1);
-    MPI_Allgather(&my_smallest_elem, 1, MPI_LONG, &_smallest_elements[0], 1,
-                  MPI_LONG, MPI_COMM_WORLD);
+    MPI_Allgather(&my_smallest_elem, 1, MPI_LONG, &_smallest_elements[0], 1, MPI_LONG, MPI_COMM_WORLD);
     _smallest_elements[_Nr_CPU] = _min_max[1];
-    for (unsigned i = 0; i < _smallest_elements.size() - 1; i++)
-      if (_smallest_elements[i] == -1)
-        _smallest_elements[i] = _smallest_elements[i + 1];
+
+    // Replace -1 by the next element in the list.
+    // Iterate from back to front to avoid problems when two (or more) successive
+    // elements are -1.
+    // The last element is asserted to be not -1, except _min_max is broken.
+    for (size_t i = _smallest_elements.size() - 1; i > 0; i--) {
+      if (_smallest_elements[i - 1] == -1) {
+        _smallest_elements[i - 1] = _smallest_elements[i];
+      }
+    }
   }
 
   void Prepare_Communication() {

@@ -37,6 +37,9 @@ ADD_EXECUTABLE(${PAROSOL_BIN}
     src/Chebyshev.cpp
     src/PCGSolver.cpp
 )
+
+# add_definitions(-DSEQUENTIAL_HDF5)
+
 # Available since cmake 3.9
 target_link_libraries(${PAROSOL_BIN} PUBLIC MPI::MPI_CXX)
 # Target for HDF5 is supported with cmake >= 3.19
