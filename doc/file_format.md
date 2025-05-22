@@ -44,7 +44,7 @@ This group must contain following datasets:
     -   Size: `(1, )`
     -   Description: Size of the voxels in mm.
 
--   `/Image_Data/Poison_ratio`
+-   `/Image_Data/Poisons_ratio`
     -   Type: `H5T_IEEE_F64LE`
     -   Size: `(1, )`
     -   Description: The Poison’s ratio of the material `[0,0.5)`.
